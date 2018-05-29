@@ -10,7 +10,7 @@
 require ('../vendor/autoload.php');
 
 use Neb\Neb\Httprequest;
-use Neb\neb\Neb;
+use Neb\Neb\Neb;
 use Neb\Neb\Api;
 
 //$request = new Httprequest();

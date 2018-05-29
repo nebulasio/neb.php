@@ -9,9 +9,9 @@ require ('../vendor/autoload.php');
 
 
 
-use Neb\Neb\Account;
-use Neb\Utils\Crypto;
-use Neb\Neb\Admin;
+use Neb\neb\Account;
+use Neb\utils\Crypto;
+use Neb\neb\Admin;
 
 
 echo "Hello, neb.php!",PHP_EOL,PHP_EOL;

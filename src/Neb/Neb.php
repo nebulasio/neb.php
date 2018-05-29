@@ -8,8 +8,9 @@
 
 namespace Neb\neb;
 
-use Neb\neb\Api;
+use Neb\Neb\Api;
 use Neb\Neb\Admin;
+use Neb\Neb\Httprequest;
 
 class Neb
 {
