@@ -81,6 +81,31 @@ class Crypto
         return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
     }
 
+    /**
+     * Create a password hash
+     *
+     * @param string $password The clear text password
+     * @param string $salt     The salt to use, or null to generate a random one
+     * @param int    $N        The CPU difficultly (must be a power of 2, > 1)
+     * @param int    $r        The memory difficultly
+     * @param int    $p        The parallel difficultly
+     *
+     * @return string The hashed password
+     */
+    public static function getScrypt($password, $salt, $N, $r, $p, $kdlen)
+    {
+        if ($N == 0 || ($N & ($N - 1)) != 0) {
+            throw new \InvalidArgumentException("N must be > 0 and a power of 2");
+        }
+        if ($N > PHP_INT_MAX / 128 / $r) {
+            throw new \InvalidArgumentException("Parameter N is too large");
+        }
+        if ($r > PHP_INT_MAX / 128 / $p) {
+            throw new \InvalidArgumentException("Parameter r is too large");
+        }
+        return  scrypt($password, $salt, $N, $r, $p, $kdlen);
+    }
+
 
 
 }
