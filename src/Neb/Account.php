@@ -9,11 +9,7 @@
 namespace Neb\Neb;
 
 use Neb\Utils\Crypto;
-use PHPUnit\Util\Json;
-use SebastianBergmann\CodeCoverage\Report\PHP;
 use StephenHill\Base58;
-use Neb\Utils\Scrypt;
-//include "ext/";
 
 define("AddressPrefix","19");
 define("NormalType",'57');
@@ -32,7 +28,10 @@ class Account
     private $path;
 
 
-    function __construct( $privateKey, $path="") {
+    function __construct( $privateKey = null, $path="") {
+        if($privateKey === null)
+            $privateKey = Crypto::createPrivateKey();
+
         $this->privateKey = $privateKey;
         $this->path = $path;
     }
@@ -77,7 +76,8 @@ class Account
             $acc->address = $base58->decode($address);;
             return $acc;
         }
-        throwException(new \Exception("invalid address"));
+
+        throw new \Exception("invalid address");
     }
 
     public function setPrivateKey($priv){
@@ -213,7 +213,7 @@ class Account
             $derivedKey =  Crypto::getScrypt($password, hex2bin($kdfparams->salt) , $kdfparams->n,$kdfparams->r,$kdfparams->p,$kdfparams->dklen); //hex string
 
         }else if($json->crypto->kdf === 'pbkdf2'){
-            echo "currently not supported!";        //todo
+            //echo "currently not supported!";        //todo
             $derivedKey = '';
         }else{
             throw new \Exception('Unsupported key derivation scheme');
@@ -221,15 +221,15 @@ class Account
 
         $derivedKeyBin = hex2bin($derivedKey);
         $ciphertext = hex2bin($json->crypto->ciphertext);
-        echo "ciphertext: ", bin2hex($ciphertext), PHP_EOL;
+        //echo "ciphertext: ", bin2hex($ciphertext), PHP_EOL;
         $method = $json->crypto->cipher;
         $iv = hex2bin($json->crypto->cipherparams->iv);
 
         if($json->version === KeyCurrentVersion){
             $mac = hash('sha3-256', substr($derivedKeyBin,16,32) . $ciphertext . $iv . $method );
-            echo "mac: ", $mac, PHP_EOL;
+            //echo "mac: ", $mac, PHP_EOL;
         }else{
-            echo "version 3 ", PHP_EOL;
+            //echo "version 3 ", PHP_EOL;
             $mac = hash('sha3-256', substr($derivedKeyBin,16,32) . $ciphertext);
         }
 
@@ -237,7 +237,6 @@ class Account
             throw new \Exception('Key derivation failed - possibly wrong passphrase');
         }
 
-        //$ciphertext = openssl_encrypt(hex2bin($this->getPrivateKey()), $method, substr($derivedKeyBin,0,16),$options=1 , $iv);
         $seed = openssl_decrypt($ciphertext, $method, substr($derivedKeyBin,0,16), $options=1, $iv);
 
         if(strlen($seed) < 32){
@@ -245,7 +244,7 @@ class Account
             $seed = substr($string,-32);
         }
 
-        echo "seed: ", bin2hex($seed) ,PHP_EOL;
+        //echo "seed: ", bin2hex($seed) ,PHP_EOL;
 
         $this->setPrivateKey(bin2hex($seed));
         return $this;

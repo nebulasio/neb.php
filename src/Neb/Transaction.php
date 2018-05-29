@@ -100,7 +100,7 @@ class Transaction
             throw new \Exception("transaction sender address's private key is invalid");
 
         $signBin = Crypto::sign(bin2hex($this->hash),$privKey); //->toDER('hex');
-        echo "got tx sign: ", bin2hex($signBin), PHP_EOL;
+        //echo "got tx sign: ", bin2hex($signBin), PHP_EOL;
         $this->sign = $signBin;
     }
 
