@@ -16,10 +16,12 @@ neb.php requires the following:
 You can install this library via Composer:
 
 ```$xslt
-composer require
+composer require ...
 ```
 
 ## Usage
+
+please refer to [examples](/example) to learn how to use neb.php.
 
 #### Account 
 
