@@ -6,7 +6,7 @@
  * Time: 22:27
  */
 
-namespace Neb\neb;
+namespace Neb\Neb;
 
 
 interface TransactionPayload

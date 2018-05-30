@@ -9,20 +9,43 @@
 require ('../vendor/autoload.php');
 
 use Neb\Neb\Httprequest;
-use Neb\neb\Neb;
+use Neb\Neb\Neb;
 use Neb\Neb\Api;
+use Neb\Neb\Account;
 
-$neb = new Neb();
-$neb->setRequest(new Httprequest());
+
+$priv = "6c41a31b4e689e1441c930ce4c34b74cc037bd5e68bbd6878adb2facf62aa7f3";
+$address = "n1H2Yb5Q6ZfKvs61htVSV4b1U2gr2GA9vo6";
+
+$acc = new Account($priv);
+
+$accAddr = $acc->getAddressString();
+echo "account address: ", $accAddr, PHP_EOL;
+
+//$acc->toKey("passphrase");
+
+echo $json = $acc->toKeyString("passphrase"),PHP_EOL;
+
+$acc->fromKey($json,"passphrase");
+echo $acc->getAddressString();
+
+
+
+//print_r(openssl_get_cipher_methods());
+
+//$neb = new Neb();
+//$neb->setRequest(new Httprequest());
 
 //echo $neb->api->getTransactionReceipt("ff9bdd621ccec49d41cf53ca59100d88e670a78e41065f88b80fc618530bb8b1"), PHP_EOL;
-echo $neb->api->getTransactionReceipt("e3c893fc566393e923dd7e2d9e4abcb35ca1f6fdb56a9951385bf82a16e3c9ea"), PHP_EOL;
-echo $resp = $neb->api->getEventsByHash("e3c893fc566393e923dd7e2d9e4abcb35ca1f6fdb56a9951385bf82a16e3c9ea");
+//echo $neb->api->getTransactionReceipt("e3c893fc566393e923dd7e2d9e4abcb35ca1f6fdb56a9951385bf82a16e3c9ea"), PHP_EOL;
+//echo $resp = $neb->api->getEventsByHash("e3c893fc566393e923dd7e2d9e4abcb35ca1f6fdb56a9951385bf82a16e3c9ea");
 //$data = "test data";
 
 //print_r(get_loaded_extensions ());
 
 
+
+//scrypt();
 //echo hash("sha3-256",$data),PHP_EOL;
 //echo hash("sha256",$data),PHP_EOL;
 //

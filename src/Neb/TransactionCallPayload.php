@@ -6,34 +6,9 @@
  * Time: 22:29
  */
 
-namespace Neb\neb;
+namespace Neb\Neb;
 
 
-//class TransactionBinaryPayload implements TransactionPayload
-//{
-//    public $Data;
-//
-//    function __construct(string $data = null)
-//    {
-//        $this->Data = $data;
-//    }
-//
-//    public static function loadPayload($data){
-//        return new static($data);
-//    }
-//
-//    function toBytes()
-//    {
-//        //return json_encode($this);
-//        return $this->Data;
-//    }
-//    function toString()
-//    {
-//        //return json_encode($this);
-//        return $this->Data;
-//    }
-//
-//}
 class TransactionCallPayload implements TransactionPayload
 {
     public $Function;
@@ -67,6 +42,33 @@ class TransactionCallPayload implements TransactionPayload
         return json_encode($this);
     }
 }
+
+
+//class TransactionBinaryPayload implements TransactionPayload
+//{
+//    public $Data;
+//
+//    function __construct(string $data = null)
+//    {
+//        $this->Data = $data;
+//    }
+//
+//    public static function loadPayload($data){
+//        return new static($data);
+//    }
+//
+//    function toBytes()
+//    {
+//        //return json_encode($this);
+//        return $this->Data;
+//    }
+//    function toString()
+//    {
+//        //return json_encode($this);
+//        return $this->Data;
+//    }
+//
+//}
 
 //class TransactionDeployPayload implements TransactionPayload
 //{

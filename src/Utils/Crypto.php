@@ -23,20 +23,20 @@ class Crypto
         //
     }
 
-    public static function RandomBytes(int $length)
-    {
-        return random_bytes($length);
-    }
-
-    public static function sha3($data)
-    {
-        return hash("sha256", $data);
-    }
-
-    public static function ripemd160($data)
-    {
-        return hash("ripemd160", $data);
-    }
+//    public static function RandomBytes(int $length)
+//    {
+//        return random_bytes($length);
+//    }
+//
+//    public static function sha3($data)
+//    {
+//        return hash("sha256", $data);
+//    }
+//
+//    public static function ripemd160($data)
+//    {
+//        return hash("ripemd160", $data);
+//    }
 
     public static function createPrivateKey()
     {
@@ -65,12 +65,12 @@ class Crypto
         return hex2bin($sign_R) . hex2bin($sign_S) . chr($sign->recoveryParam);
     }
 
-    public static function isValidPublic($pub_hex)
-    {
+//    public static function isValidPublic($pub_hex)
+//    {
+//
+//    }
 
-    }
-
-    //$data is a random, such as openssl_random_pseudo_bytes(16)
+    //$data is a random of 16 bytes, such as openssl_random_pseudo_bytes(16)
     public static function  guidv4($data)
     {
         assert(strlen($data) == 16);

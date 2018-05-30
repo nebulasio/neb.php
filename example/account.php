@@ -16,27 +16,34 @@ use Neb\neb\Admin;
 
 echo "Hello, neb.php!",PHP_EOL,PHP_EOL;
 
+$keyJson = '{"version":4,"id":"814745d0-9200-42bd-a4df-557b2d7e1d8b","address":"n1H2Yb5Q6ZfKvs61htVSV4b1U2gr2GA9vo6","crypto":{"ciphertext":"fb831107ce71ed9064fca0de8d514d7b2ba0aa03aa4fa6302d09fdfdfad23a18","cipherparams":{"iv":"fb65caf32f4dbb2593e36b02c07b8484"},"cipher":"aes-128-ctr","kdf":"scrypt","kdfparams":{"dklen":32,"salt":"dddc4f9b3e2079b5cc65d82d4f9ecf27da6ec86770cb627a19bc76d094bf9472","n":4096,"r":8,"p":1},"mac":"1a66d8e18d10404440d2762c0d59d0ce9e12a4bbdfc03323736a435a0761ee23","machash":"sha3256"}}';
+
+//make a new account and get their privateKey/ publicKey/ address
 $account = Account::newAccount();
-$priv = $account->getPrivateKeyString();
+$priv = $account->getPrivateKey();
 echo "get private key: " ,$priv, PHP_EOL;
-
 $pub = $account->getPublicKey();
-echo "get pbulic key: ", $pub, PHP_EOL, PHP_EOL;
-
+echo "get pbulic key: ", $pub, PHP_EOL;
 $address = $account->getAddressString();
 echo "get address: " , $address, PHP_EOL, PHP_EOL;
 
-echo "verify: set priv and get public & address: ", PHP_EOL;
-$priv = "8d464aeeca0281523fda55da220f1257219052b1450849fea6b23695ee6b3f93";
-echo "given private key: ", $priv, PHP_EOL;
-echo "given private key length: ", strlen($priv), PHP_EOL;
-$account->setPrivateKey($priv);
-$priv = $account->getPrivateKey();
-echo "check set private key: ", $priv, PHP_EOL;
-$public = $account->getPublicKey();
-echo "Public key: ", $public, PHP_EOL;
-$address = $account->getAddressString();
-echo "account address: " , $address, PHP_EOL;
+//echo "verify: set priv and get public & address: ", PHP_EOL;
+//$priv = "8d464aeeca0281523fda55da220f1257219052b1450849fea6b23695ee6b3f93";
+//echo "given private key: ", $priv, PHP_EOL;
+//$account->setPrivateKey($priv);
+//$priv = $account->getPrivateKey();
+//echo "check set private key: ", $priv, PHP_EOL, PHP_EOL;
+
+//export account to keystore file
+$keystore = $account->toKeyString("passphrase");
+echo $keystore, PHP_EOL;
+
+//
+echo "restore account from keystore file",PHP_EOL;
+$acc = Account::newAccount();
+$acc->fromKey($keystore,"passphrase");
+echo "restored account: ", $acc->getAddressString(),PHP_EOL;
+echo "it should be: ", $account->getAddressString() , PHP_EOL;
 
 /**
  * example:
@@ -47,28 +54,4 @@ echo "account address: " , $address, PHP_EOL;
  *
  */
 
-/*
-{
-    "version": 4,
-	"id": "e38cf1c0-4450-43fd-8dfe-9face081ad62",
-	"address": "n1HUbJZ45Ra5jrRqWvfVaRMiBMB3CACGhqc",
-	"crypto": {
-    "ciphertext": "f351f2f6d205ac4d608ade0440eed4208712352970c478143e9cc99da4a09ede",
-		"cipherparams": {
-        "iv": "2e4fe06209dbe7a7e4f14d13525f0260"
-		},
-		"cipher": "aes-128-ctr",
-		"kdf": "scrypt",
-		"kdfparams": {
-        "dklen": 32,
-			"salt": "a4f022a370892ae3ca417a66d655f34a31e00c5dbdbe44fbda63e222580b688b",
-			"n": 4096,
-			"r": 8,
-			"p": 1
-		},
-		"mac": "413a7f984ef3dca7885ca185346ee4f94d25e40cf0d340b461a354b60eed730b",
-		"machash": "sha3256"
-	}
-}
-*/
 

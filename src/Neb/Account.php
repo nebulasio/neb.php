@@ -9,11 +9,7 @@
 namespace Neb\Neb;
 
 use Neb\Utils\Crypto;
-use PHPUnit\Util\Json;
-use SebastianBergmann\CodeCoverage\Report\PHP;
 use StephenHill\Base58;
-use Neb\Utils\Scrypt;
-//include "ext/";
 
 define("AddressPrefix","19");
 define("NormalType",'57');
@@ -32,7 +28,10 @@ class Account
     private $path;
 
 
-    function __construct( $privateKey, $path="") {
+    function __construct( $privateKey = null, $path="") {
+        if($privateKey === null)
+            $privateKey = Crypto::createPrivateKey();
+
         $this->privateKey = $privateKey;
         $this->path = $path;
     }
@@ -70,14 +69,15 @@ class Account
             return $address;
         }
 
-        $acc = new static("");
+        $acc = new static();
         if(self::isValidAddress($address)){
             //echo "fromAddress:: address string for base58_decode: " , $address,PHP_EOL;
             $base58 = new Base58();
             $acc->address = $base58->decode($address);;
             return $acc;
         }
-        throwException(new \Exception("invalid address"));
+
+        throw new \Exception("invalid address");
     }
 
     public function setPrivateKey($priv){
@@ -96,9 +96,9 @@ class Account
         return $this->privateKey;
     }
 
-    public function getPrivateKeyString(){
-        return $this->privateKey;
-    }
+//    public function getPrivateKeyString(){
+//        return $this->privateKey;
+//    }
 
     public function getPublicKey(){
         if(!isset($this->publicKey)){
@@ -107,9 +107,9 @@ class Account
         return $this->publicKey;
     }
 
-    public function getPublicKeyString(){
-        return $this->getPublicKey();
-    }
+//    public function getPublicKeyString(){
+//        return $this->getPublicKey();
+//    }
 
     //binary string,
     public function getAddress(){
@@ -153,7 +153,7 @@ class Account
         if($kdf === 'pbkdf2'){
             $kdfparams['c'] = isset($opts['c']) ? $opts['c'] : 262144;
             $kdfparams['prf'] = 'hmac-sha256';
-            $derivedKey = '';
+            $derivedKey = hash_pbkdf2("sha256", $password, $salt, $kdfparams['c'], $kdfparams['dklen'] * 2, false );
         }else if($kdf = 'scrypt'){
             $kdfparams['n'] = isset($opts['n']) ? $opts['n'] : 4096;
             $kdfparams['r'] = isset($opts['r']) ? $opts['r'] : 8;
@@ -164,16 +164,16 @@ class Account
             throw new \Exception('Unsupported kdf');
         }
 
-        echo "salt: ", bin2hex($salt),PHP_EOL;
-        echo "kdfparams: ", json_encode($kdfparams),PHP_EOL;
-        echo  "derivedKey: ", ($derivedKey),PHP_EOL;
+//        echo "salt: ", bin2hex($salt),PHP_EOL;
+//        echo "kdfparams: ", json_encode($kdfparams),PHP_EOL;
+//        echo  "derivedKey: ", ($derivedKey),PHP_EOL;
 
         $derivedKeyBin = hex2bin($derivedKey); //$derivedKey is a hex string
         $method = isset($opts['cipher']) ? $opts['cipher'] : 'aes-128-ctr';
         $ciphertext = openssl_encrypt(hex2bin($this->getPrivateKey()), $method, substr($derivedKeyBin,0,16),$options=1 , $iv); //binary strinig
 
-        echo "ciphertext: ", bin2hex($ciphertext), PHP_EOL;
-        echo "uuid: ", Crypto::guidv4(random_bytes(16)), PHP_EOL;
+//        echo "ciphertext: ", bin2hex($ciphertext), PHP_EOL;
+//        echo "uuid: ", Crypto::guidv4(random_bytes(16)), PHP_EOL;
 
         $mac = hash("sha3-256", substr($derivedKeyBin,16,32) . $ciphertext . $iv . $method);
 
@@ -213,23 +213,23 @@ class Account
             $derivedKey =  Crypto::getScrypt($password, hex2bin($kdfparams->salt) , $kdfparams->n,$kdfparams->r,$kdfparams->p,$kdfparams->dklen); //hex string
 
         }else if($json->crypto->kdf === 'pbkdf2'){
-            echo "currently not supported!";        //todo
-            $derivedKey = '';
+            $kdfparams = $json->crypto->kdfparams;
+            $derivedKey = hash_pbkdf2("sha256", $password, hex2bin($kdfparams->salt), $kdfparams->c, $kdfparams-> dklen * 2, false );
         }else{
             throw new \Exception('Unsupported key derivation scheme');
         }
 
         $derivedKeyBin = hex2bin($derivedKey);
         $ciphertext = hex2bin($json->crypto->ciphertext);
-        echo "ciphertext: ", bin2hex($ciphertext), PHP_EOL;
+        //echo "ciphertext: ", bin2hex($ciphertext), PHP_EOL;
         $method = $json->crypto->cipher;
         $iv = hex2bin($json->crypto->cipherparams->iv);
 
         if($json->version === KeyCurrentVersion){
             $mac = hash('sha3-256', substr($derivedKeyBin,16,32) . $ciphertext . $iv . $method );
-            echo "mac: ", $mac, PHP_EOL;
+            //echo "mac: ", $mac, PHP_EOL;
         }else{
-            echo "version 3 ", PHP_EOL;
+            //echo "version 3 ", PHP_EOL;
             $mac = hash('sha3-256', substr($derivedKeyBin,16,32) . $ciphertext);
         }
 
@@ -237,7 +237,6 @@ class Account
             throw new \Exception('Key derivation failed - possibly wrong passphrase');
         }
 
-        //$ciphertext = openssl_encrypt(hex2bin($this->getPrivateKey()), $method, substr($derivedKeyBin,0,16),$options=1 , $iv);
         $seed = openssl_decrypt($ciphertext, $method, substr($derivedKeyBin,0,16), $options=1, $iv);
 
         if(strlen($seed) < 32){
@@ -245,7 +244,7 @@ class Account
             $seed = substr($string,-32);
         }
 
-        echo "seed: ", bin2hex($seed) ,PHP_EOL;
+        //echo "seed: ", bin2hex($seed) ,PHP_EOL;
 
         $this->setPrivateKey(bin2hex($seed));
         return $this;

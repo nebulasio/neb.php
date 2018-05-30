@@ -6,7 +6,7 @@
  * Time: 0:23
  */
 
-namespace Neb\neb;
+namespace Neb\Neb;
 
 
 class TransactionBinaryPayload implements TransactionPayload

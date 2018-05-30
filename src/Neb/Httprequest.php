@@ -31,19 +31,7 @@ class Httprequest
     function request(string $method, string $api, string $payload){
 
         $url = $this->createUrl($api);
-        echo $url, PHP_EOL;
-
-//        $options = array(
-//            'http' => array(
-//                'header' => "Content-type: application/json\r\n".
-//                    "Accept: application/json\r\n",
-//                'method' => $method,
-//                'content' => $payload
-//            )
-//        );
-//        $contex = stream_context_create($options);
-//        $result = file_get_contents($url,false,$contex);
-//        return $result;
+        //echo $url, PHP_EOL;
 
         $curl=curl_init();
         $options = array(
