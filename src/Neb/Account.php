@@ -153,7 +153,7 @@ class Account
         if($kdf === 'pbkdf2'){
             $kdfparams['c'] = isset($opts['c']) ? $opts['c'] : 262144;
             $kdfparams['prf'] = 'hmac-sha256';
-            $derivedKey = '';
+            $derivedKey = hash_pbkdf2("sha256", $password, $salt, $kdfparams['c'], $kdfparams['dklen'] * 2, false );
         }else if($kdf = 'scrypt'){
             $kdfparams['n'] = isset($opts['n']) ? $opts['n'] : 4096;
             $kdfparams['r'] = isset($opts['r']) ? $opts['r'] : 8;
@@ -213,8 +213,8 @@ class Account
             $derivedKey =  Crypto::getScrypt($password, hex2bin($kdfparams->salt) , $kdfparams->n,$kdfparams->r,$kdfparams->p,$kdfparams->dklen); //hex string
 
         }else if($json->crypto->kdf === 'pbkdf2'){
-            //echo "currently not supported!";        //todo
-            $derivedKey = '';
+            $kdfparams = $json->crypto->kdfparams;
+            $derivedKey = hash_pbkdf2("sha256", $password, hex2bin($kdfparams->salt), $kdfparams->c, $kdfparams-> dklen * 2, false );
         }else{
             throw new \Exception('Unsupported key derivation scheme');
         }

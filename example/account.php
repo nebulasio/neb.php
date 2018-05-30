@@ -41,9 +41,9 @@ echo $keystore, PHP_EOL;
 //
 echo "restore account from keystore file",PHP_EOL;
 $acc = Account::newAccount();
-$acc->fromKey($keyJson,"passphrase");
+$acc->fromKey($keystore,"passphrase");
 echo "restored account: ", $acc->getAddressString(),PHP_EOL;
-echo "it should be: ", "n1H2Yb5Q6ZfKvs61htVSV4b1U2gr2GA9vo6", PHP_EOL;
+echo "it should be: ", $account->getAddressString() , PHP_EOL;
 
 /**
  * example:
