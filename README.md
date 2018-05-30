@@ -15,8 +15,8 @@ neb.php requires the following:
 
 You can install this library via Composer:
 
-```$xslt
-composer require ...
+```sh
+composer require nebulasio/neb.php:0.0.1
 ```
 
 ## Usage
@@ -29,6 +29,7 @@ please refer to [examples](/example) to learn how to use neb.php.
 use Neb\neb\Account;
 
 $account = Account::newAccount();
+//$account = new Account();     //This is the same as above
 $addr = $account->getAddressString(); //such as "n1HUbJZ45Ra5jrRqWvfVaRMiBMB3CACGhqc"  
 $keyStore = $account->toKeyString();  //Please save your keyStore(json) in to file and keep it safe
 
@@ -67,7 +68,7 @@ $nonce = $respObj->result->nonce;
 
 //make new transaction
 $chainId = 1001;
-$tx = new Transaction($chainId, $from, $to, "0", $nonce + 1 );
+$tx = new Transaction($chainId, $from, $to, $value = "0", $nonce + 1 );
 $tx->hashTransaction();
 $tx->signTransaction();
 
