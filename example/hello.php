@@ -9,7 +9,7 @@
 require ('../vendor/autoload.php');
 
 use Neb\Neb\Httprequest;
-use Neb\neb\Neb;
+use Neb\Neb\Neb;
 use Neb\Neb\Api;
 use Neb\Neb\Account;
 
@@ -27,6 +27,7 @@ echo "account address: ", $accAddr, PHP_EOL;
 echo $json = $acc->toKeyString("passphrase"),PHP_EOL;
 
 $acc->fromKey($json,"passphrase");
+echo $acc->getAddressString();
 
 
 

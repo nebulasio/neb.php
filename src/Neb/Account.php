@@ -69,7 +69,7 @@ class Account
             return $address;
         }
 
-        $acc = new static("");
+        $acc = new static();
         if(self::isValidAddress($address)){
             //echo "fromAddress:: address string for base58_decode: " , $address,PHP_EOL;
             $base58 = new Base58();
@@ -96,9 +96,9 @@ class Account
         return $this->privateKey;
     }
 
-    public function getPrivateKeyString(){
-        return $this->privateKey;
-    }
+//    public function getPrivateKeyString(){
+//        return $this->privateKey;
+//    }
 
     public function getPublicKey(){
         if(!isset($this->publicKey)){
@@ -107,9 +107,9 @@ class Account
         return $this->publicKey;
     }
 
-    public function getPublicKeyString(){
-        return $this->getPublicKey();
-    }
+//    public function getPublicKeyString(){
+//        return $this->getPublicKey();
+//    }
 
     //binary string,
     public function getAddress(){
@@ -164,16 +164,16 @@ class Account
             throw new \Exception('Unsupported kdf');
         }
 
-        echo "salt: ", bin2hex($salt),PHP_EOL;
-        echo "kdfparams: ", json_encode($kdfparams),PHP_EOL;
-        echo  "derivedKey: ", ($derivedKey),PHP_EOL;
+//        echo "salt: ", bin2hex($salt),PHP_EOL;
+//        echo "kdfparams: ", json_encode($kdfparams),PHP_EOL;
+//        echo  "derivedKey: ", ($derivedKey),PHP_EOL;
 
         $derivedKeyBin = hex2bin($derivedKey); //$derivedKey is a hex string
         $method = isset($opts['cipher']) ? $opts['cipher'] : 'aes-128-ctr';
         $ciphertext = openssl_encrypt(hex2bin($this->getPrivateKey()), $method, substr($derivedKeyBin,0,16),$options=1 , $iv); //binary strinig
 
-        echo "ciphertext: ", bin2hex($ciphertext), PHP_EOL;
-        echo "uuid: ", Crypto::guidv4(random_bytes(16)), PHP_EOL;
+//        echo "ciphertext: ", bin2hex($ciphertext), PHP_EOL;
+//        echo "uuid: ", Crypto::guidv4(random_bytes(16)), PHP_EOL;
 
         $mac = hash("sha3-256", substr($derivedKeyBin,16,32) . $ciphertext . $iv . $method);
 

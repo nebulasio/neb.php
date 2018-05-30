@@ -9,7 +9,7 @@
 namespace Neb\Neb;
 
 use Neb\Neb\Httprequest;
-use Neb\neb\Neb;
+use Neb\Neb\Neb;
 
 class Api
 {

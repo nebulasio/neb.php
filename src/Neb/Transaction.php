@@ -61,7 +61,7 @@ class Transaction
             $payload = new TransactionBinaryPayload();
 
         $payloadData = $payload->toBytes();
-        echo "payloadData: ", $payloadData,PHP_EOL;
+        //echo "payloadData: ", $payloadData,PHP_EOL;
         //$this->data = $this->data2Proto($payloadType, $payloadData);
         $this->data = array(
             "payloadType" => $payloadType,
