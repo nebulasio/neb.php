@@ -18,17 +18,13 @@ class Neb
     public $admin;
     public $request;
 
-    public function __construct(Httprequest ...$request)
+    public function __construct(Httprequest $request = null, $apiVersion = "v1")
     {
-        if(sizeof($request) >= 1)
-            $request = $request[0];
-        else
-            $request = new Httprequest();
 
         $this->request = $request;
 
-        $this->api = new Api($this);
-        $this->admin = new Admin($this);
+        $this->api = new Api($this, $apiVersion);
+        $this->admin = new Admin($this, $apiVersion);
     }
 
     public function setRequest(Httprequest $request){

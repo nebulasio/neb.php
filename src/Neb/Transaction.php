@@ -9,16 +9,17 @@
 namespace Neb\Neb;
 
 use Neb\Neb\Account;
-use GMP;
 use Corepb\Data;
 use Neb\Utils\ByteUtils;
 use Neb\Utils\Crypto;
+use StephenHill\Base58;
 
 class Transaction
 {
     private $chainID;
-    private $from;
-    private $to;
+    private $from;  //Account object
+    private $to;    //base58 address
+    private $toBinary;  //binary account address
     private $value;
     private $nonce;
     private $timestamp;
@@ -35,21 +36,23 @@ class Transaction
     const CALL = "call";
 
 
-    function __construct(int $chainID,  $from,  $to, string $value, int $nonce,
+    function __construct(int $chainID, Account $from, string $to, string $value, int $nonce,
                          string $gasPrice = '0', string $gasLimit = '0',
                          string $payloadType = Transaction::BINARY, TransactionPayload $payload = null)
     {
+
+        if(!Account::isValidAddress($to))       //todo: 是否需要判断 并抛出异常
+            throw new \Exception("Invalid receiver address");
+
         $this->chainID = $chainID;
-        $this->from = Account::fromAddress($from);
-        $this->to = Account::fromAddress($to);
+        $this->from = $from;
+        $this->to = $to;
+        $this->toBinary = $this->decodeAddress($to);    //decode and get binary address string
         $this->value = $value;
         $this->nonce = $nonce;
         $this->timestamp = floor(strtotime("now"));
         $this->gasPrice = $gasPrice;
         $this->gasLimit = $gasLimit;
-
-        //print_r($this->from);
-        //print_r($this->to);
 
         $this->alg = Crypto::SECP256K1;
 
@@ -70,6 +73,12 @@ class Transaction
 
     }
 
+    private function decodeAddress($address){
+        $base58 = new Base58();
+        $addressBin = $base58->decode($address);
+        return $addressBin;
+    }
+
     function data2Proto($payloadType,$payload){
         $data = new Data();
         $data->setPayloadType($payloadType);
@@ -79,8 +88,9 @@ class Transaction
     }
 
     function hashTransaction(){
-        $hashArgs = $this->from->getAddress();
-        $hashArgs .= $this->to->getAddress();
+        $hashArgs = hex2bin( $this->from->getAddress());
+        //$hashArgs .= $this->to->getAddress();
+        $hashArgs .= $this->toBinary;
         $hashArgs .= ByteUtils::padToBigEndian($this->value,16);
         $hashArgs .= ByteUtils::padToBigEndian($this->nonce,8);
         $hashArgs .= ByteUtils::padToBigEndian($this->timestamp,8);
@@ -96,7 +106,7 @@ class Transaction
 
     function signTransaction(){
         $privKey = $this->from->getprivateKey();
-        if(!isset($privKey) || $privKey === null)
+        if(empty($privKey))
             throw new \Exception("transaction sender address's private key is invalid");
 
         $signBin = Crypto::sign(bin2hex($this->hash),$privKey); //->toDER('hex');
@@ -109,7 +119,7 @@ class Transaction
         $txArray = array(
             "chainId" => $this->chainID,
             "from" => $this->from->getAddressString(),
-            "to" => $this->to->getAddressString(),
+            "to" => $this->to,
             "value" => $this->value,
             "nonce" => $this->nonce,
             "timestamp" => $this->timestamp,
@@ -128,13 +138,14 @@ class Transaction
     }
 
     function toProto(){
-//        if(!isset($this->sign))
-//            throw new \Exception("You should sign transaction before this operation.");
+        if(empty($this->sign))
+            throw new \Exception("You should sign transaction before this operation.");
 
         $tx = new \Corepb\Transaction();
         $tx->setHash($this->hash);
-        $tx->setFrom($this->from->getAddress());
-        $tx->setTo($this->to->getAddress());
+        $tx->setFrom(hex2bin($this->from->getAddress()));
+        //$tx->setTo($this->to->getAddress());
+        $tx->setTo($this->toBinary);
 
         $tx->setValue(ByteUtils::padToBigEndian($this->value,16));
         $tx->setNonce($this->nonce);
@@ -146,9 +157,7 @@ class Transaction
         $tx->setAlg($this->alg);
         $tx->setSign($this->sign);
 
-
         return $tx->serializeToString();
-
     }
 
     function toProtoString(){

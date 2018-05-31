@@ -6,9 +6,9 @@
  * Time: 23:48
  */
 
-namespace Test\utils;
+namespace Test\neb;
 
-require ('../../vendor/autoload.php');
+require('../../vendor/autoload.php');
 
 use Neb\Neb\Transaction;
 use Neb\Neb\Account;

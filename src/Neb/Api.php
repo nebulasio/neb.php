@@ -15,13 +15,16 @@ class Api
 {
     private  $request;
     private $path;
+    private $apiVersion;
 
-    function __construct(Neb $neb)
+
+    function __construct(Neb $neb, $apiVersion)
     {
         $this->setRequest($neb->request);
+        $this->apiVersion = $apiVersion;
     }
 
-    public function setRequest( Httprequest $request){
+    public function setRequest( $request){
         $this->request = $request;
         $this->path = "/user";
     }
@@ -126,11 +129,17 @@ class Api
         return $this->sendRequest("post", "/dynasty", $param);
     }
 
+    //e.g. https://testnet.nebulas.io/v1/user/getTransactionReceipt
+    function createUrl($api){
+        return $this->request->host . '/' . $this->apiVersion . $this->path . $api;        //
+    }
 
-    function sendRequest(string $method, string $api, $param){
-        $action = $this->path . $api;
+    function sendRequest(string $method, string $api, $param){      //todo: createUrl
+        //$action = $this->path . $api;
+        $url = $this->createUrl($api);
+        //echo "url: ", $url, PHP_EOL;
         $param = json_encode($param);
-        return $this->request->request($method,$action,$param);
+        return $this->request->request($method, $url, $param);
     }
 
 }

@@ -6,7 +6,7 @@
  * Time: 23:35
  */
 
-namespace Test;
+namespace Test\neb;
 
 use Neb\Neb\Account;
 use PHPUnit\Framework\TestCase;
@@ -24,13 +24,13 @@ class AccountTest extends TestCase
 
     public function setUp()
     {
-        $this->account = Account::newAccount();
-        $this->account->fromKey($this->keyJson, $this->password);
+        //$this->account = Account::newAccount();
+        $this->account =Account::fromKey($this->keyJson, $this->password);
     }
 
     public function testGetAddress()
     {
-        self::assertEquals($this->account->getAddress(), hex2bin($this->addressHex));
+        self::assertEquals($this->account->getAddress(), ($this->addressHex));
     }
 
     public function testGetAddressString()
@@ -41,20 +41,43 @@ class AccountTest extends TestCase
 
     public function testIsValidAddress()
     {
-        $address = "n1HUbJZ45Ra5jrRqWvfVaRMiBMB3CACGhqc";
+        $address = "n1HUbJZ45Ra5jrRqWvfVaRMiBMB3CACGhqc";   //account
         $this->assertTrue(Account::isValidAddress($address));
 
-        $address = "n1HUbJZ45Ra5jrRqWvfVaRMiBMB3CACGhq1";
+        $address = "n1oXdmwuo5jJRExnZR5rbceMEyzRsPeALgm";   //contract
+        $this->assertTrue(Account::isValidAddress($address));
+
+        $address = "n1HUbJZ45Ra5jrRqWvfVaRMiBMB3CACGhq1";   //wrong
         $this->assertFalse(Account::isValidAddress($address));
-        $address = "";
+        $address = "";                                      //empty
         $this->assertFalse(Account::isValidAddress($address));
 
     }
 
-    public function testFromAddress()
-    {
-        $acc = Account::fromAddress($this->address);
-        self::assertEquals($acc->getAddressString(), $this->address);
+    public function testIsValidAccountAddress(){
+        $address = "n1HUbJZ45Ra5jrRqWvfVaRMiBMB3CACGhqc";   //account
+        $this->assertTrue(Account::isValidAccountAddress($address));
+
+        $address = "n1oXdmwuo5jJRExnZR5rbceMEyzRsPeALgm";   //contract
+        $this->assertFalse(Account::isValidAccountAddress($address));
+
+        $address = "n1HUbJZ45Ra5jrRqWvfVaRMiBMB3CACGhq1";   //wrong
+        $this->assertFalse(Account::isValidAccountAddress($address));
+        $address = "";                                      //empty
+        $this->assertFalse(Account::isValidAccountAddress($address));
+
+    }
+    public function testIsValidContractAddress(){
+        $address = "n1HUbJZ45Ra5jrRqWvfVaRMiBMB3CACGhqc";   //account
+        $this->assertFalse(Account::isValidContractAddress($address));
+
+        $address = "n1oXdmwuo5jJRExnZR5rbceMEyzRsPeALgm";   //contract
+        $this->assertTrue(Account::isValidContractAddress($address));
+
+        $address = "n1HUbJZ45Ra5jrRqWvfVaRMiBMB3CACGhq1";   //wrong
+        $this->assertFalse(Account::isValidContractAddress($address));
+        $address = "";                                      //empty
+        $this->assertFalse(Account::isValidContractAddress($address));
 
     }
 
@@ -80,25 +103,15 @@ class AccountTest extends TestCase
         $this->assertTrue($gotPub === $this->estPubKey);
     }
 
-//    public function testGetPublicKeyString(){}
-//    public function testGetPrivateKeyString(){}
-
-//    public function testToKey(){}
-
-    public function testToKeyString()
+    public function testToKey()
     {
         $password = "passphraseeee";
         $acc1 = Account::newAccount();
-        $acc2 = Account::newAccount();
-        $keyString = $acc1->toKeyString($password);
-        $acc2->fromKey($keyString, $password);
+        $keyString = $acc1->toKey($password);
+
+        $acc2 =Account::fromKey($keyString, $password);
         self::assertEquals($acc1->getAddressString(), $acc2->getAddressString());
     }
-
-//    public function testFromKey()
-//    {
-//
-//    }
 
 
 //    public function testNewAccount()

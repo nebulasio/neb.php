@@ -6,7 +6,7 @@
  * Time: 23:18
  */
 
-namespace Test\utils;
+namespace Test\neb;
 
 use Neb\Neb\Api;
 use PHPUnit\Framework\TestCase;

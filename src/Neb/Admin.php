@@ -14,15 +14,17 @@ class Admin
 
     private $request;
     private $path;
+    private $apiVersion;
 
-    function __construct(Neb $neb)
+    function __construct(Neb $neb, $apiVersion)
     {
         $this->setRequest($neb->request);
+        $this->apiVersion = $apiVersion;
     }
 
-    public function setRequest( Httprequest $request){
+    public function setRequest( $request){
         $this->request = $request;
-        $this->path = "/";
+        $this->path = "/admin";
     }
 
     public static  function hello(){

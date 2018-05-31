@@ -23,26 +23,51 @@ define("KeyVersion3", 3);
 class Account
 {
     private $privateKey;    //hex string like : "36852c5e0aff2942c72d7662ced156eebefb1516a1c5986625f9c2f4eb119fdc"
-    private $publicKey;
-    private $address;   //binary string like
-    private $path;
+    private $publicKey;     //hex string
+    private $address;   //hex string like: "19571b8df1d7065d1f9c36a9dec6d736d252c065b13e39b163d5"
 
-
-    function __construct( $privateKey = null, $path="") {
+    /**
+     * Account constructor.
+     * Constructs an account object with given privateKey, or generate a privateKey if the given key is null
+     *
+     * @param null $privateKey
+     */
+    function __construct( $privateKey = null) {
         if($privateKey === null)
             $privateKey = Crypto::createPrivateKey();
 
         $this->privateKey = $privateKey;
-        $this->path = $path;
+        //echo "private key: ", $privateKey, PHP_EOL;
+        $this->publicKey = Crypto::privateToPublic($this->privateKey);
+        $this->address = $this->addressFromPublicKey();
     }
 
+    /**
+     * Make a new account.
+     *
+     * @return Account object.
+     */
     public static function newAccount(){
-        //return __construct(Crypto::RandomBytes(32));
         $privateKey = Crypto::createPrivateKey();
         return new static($privateKey);
     }
 
-    public static function isValidAddress(string $address, $type = null):bool {
+    private function addressFromPublicKey(){
+        $publicKey = $this->getPublicKey();
+        $content = hash("sha3-256",hex2bin($publicKey));    //hash returns hex string
+        $content = hash("ripemd160",hex2bin($content));
+        $content = AddressPrefix.NormalType.$content;
+
+        $checksum = hash("sha3-256", hex2bin($content));     //get checksum
+        $checksum = substr($checksum,0,8);
+
+        $addressHex = $content.$checksum;   // get address hex string
+
+        //return hex2bin($addressHex);
+        return $addressHex;
+    }
+
+      private static function _isValidAddress(string $address, $type = null):bool {  //todo isValidAccountAddress & isValidContractAddress & isValidAddress
         if(!is_string($address) || strlen($address) !== AddressStringLength)
             return false;
 
@@ -55,7 +80,12 @@ class Account
         if(substr($addressHex,0,2) !== AddressPrefix)
             return false;
         $addressType = substr($addressHex,2,2);
-        if($addressType!== NormalType && $addressType!== ContractType)
+
+        if($type === null){
+            if($addressType!== NormalType && $addressType!== ContractType)
+                return false;
+        }
+        else if($addressType !== $type)
             return false;
 
         $checksum = hash("sha3-256",substr($addressBin,0,AddressLength-4),true);
@@ -63,31 +93,37 @@ class Account
 
     }
 
-    public static function fromAddress($address){
-        if($address instanceof Account){
-            //echo "fromAddress:: Account obj address: ", $address->getAddressString(), PHP_EOL;
-            return $address;
-        }
-
-        $acc = new static();
-        if(self::isValidAddress($address)){
-            //echo "fromAddress:: address string for base58_decode: " , $address,PHP_EOL;
-            $base58 = new Base58();
-            $acc->address = $base58->decode($address);;
-            return $acc;
-        }
-
-        throw new \Exception("invalid address");
+    /**
+     * To check if an address is valid
+     * @param string $address
+     * @return bool if the given key is valid
+     */
+    public static function isValidAddress(string $address){
+        return Account::_isValidAddress($address);
+    }
+    public static function isValidAccountAddress(string $address){
+        return Account::_isValidAddress($address, NormalType);
+    }
+    public static function isValidContractAddress(string $address){
+        return Account::_isValidAddress($address, ContractType);
     }
 
+    /**
+     * Reset the account's private key to a given one, and regenerates it's corresponding public key and address
+     *
+     * @param $priv
+     * @throws \Exception if the privateKey is invalid
+     */
     public function setPrivateKey($priv){
         if(is_string($priv) && strlen($priv) == 64){
             $this->privateKey = $priv;
-            unset($this->publicKey);
-            unset($this->address);
+//            unset($this->publicKey);     //to--do : 生成 publicKey & address
+//            unset($this->address);
+            $this->publicKey = Crypto::privateToPublic($this->privateKey);
+            $this->address = $this->addressFromPublicKey();
 
         }else{
-            echo "invalid private key", PHP_EOL;
+            throw new \Exception("Invalid private key.");
         }
     }
 
@@ -96,53 +132,45 @@ class Account
         return $this->privateKey;
     }
 
-//    public function getPrivateKeyString(){
-//        return $this->privateKey;
-//    }
 
     public function getPublicKey(){
-        if(!isset($this->publicKey)){
-            $this->publicKey = Crypto::privateToPublic($this->privateKey);
-        }
         return $this->publicKey;
     }
 
-//    public function getPublicKeyString(){
-//        return $this->getPublicKey();
-//    }
-
-    //binary string,
     public function getAddress(){
-        if(!isset($this->address)){
-            if(!isset($this->privateKey) && !isset($this->publicKey))
-                throw new \Exception("Account has no private key, cannot generate address");
-            $publicKey = $this->getPublicKey();
-            $content = hash("sha3-256",hex2bin($publicKey));    //hash returns hex string
-            $content = hash("ripemd160",hex2bin($content));
-            $content = AddressPrefix.NormalType.$content;
-
-            $checksum = hash("sha3-256", hex2bin($content));
-            $checksum = substr($checksum,0,8);
-
-            $addressHex = $content.$checksum;
-//            $base58 = new Base58();
-//            $address = $base58->encode(hex2bin($addressHex));
-//            $this->address = $address;
-            $this->address = hex2bin($addressHex);
-        }
         return $this->address;
     }
 
+    /**
+     * Get account address of Base58 format.
+     *
+     * To learn the address generation algorithm, please refer to wiki <a href="https://github.com/nebulasio/wiki/blob/master/address.md">Address</a>
+     *
+     * @link https://github.com/nebulasio/wiki/blob/master/address.md
+     * @return string
+     * @throws \Exception
+     */
     function getAddressString(){
-        $addressHex = $this->getAddress();
+        //$addressHex = $this->getAddress();
         $base58 = new Base58();
-        return $base58->encode($addressHex);
+        return $base58->encode(hex2bin($this->address));      //input should be an binary string
     }
 
-    function toKey(string $password, array $opts = []){
-
-        $salt = isset($opts['salt']) ? $opts['salt'] : random_bytes(32);
-        $iv = isset($opts['iv']) ? $opts['iv'] : random_bytes(16);
+    /**
+     * To generate key-store data, which is an json string
+     *
+     * @param string $password options for keyStore file
+     * @param array $opts options of generating keyStore
+     * @return string
+     * @throws \Exception
+     */
+    function toKey(string $password, array $opts = []){ //todo remove opts?? n/p/r
+        try{
+            $salt = isset($opts['salt']) ? $opts['salt'] : random_bytes(32);
+            $iv = isset($opts['iv']) ? $opts['iv'] : random_bytes(16);
+        } catch (\Exception $e){
+            throw $e;
+        }
 
         $kdf = isset($opts['kdf']) ? $opts['kdf'] : "scrypt";
         $kdfparams = array(
@@ -164,22 +192,21 @@ class Account
             throw new \Exception('Unsupported kdf');
         }
 
-//        echo "salt: ", bin2hex($salt),PHP_EOL;
-//        echo "kdfparams: ", json_encode($kdfparams),PHP_EOL;
-//        echo  "derivedKey: ", ($derivedKey),PHP_EOL;
-
         $derivedKeyBin = hex2bin($derivedKey); //$derivedKey is a hex string
-        $method = isset($opts['cipher']) ? $opts['cipher'] : 'aes-128-ctr';
+        $method = 'aes-128-ctr';
         $ciphertext = openssl_encrypt(hex2bin($this->getPrivateKey()), $method, substr($derivedKeyBin,0,16),$options=1 , $iv); //binary strinig
-
-//        echo "ciphertext: ", bin2hex($ciphertext), PHP_EOL;
-//        echo "uuid: ", Crypto::guidv4(random_bytes(16)), PHP_EOL;
 
         $mac = hash("sha3-256", substr($derivedKeyBin,16,32) . $ciphertext . $iv . $method);
 
-        return array(
+        try{
+            $uuid = Crypto::guidv4(random_bytes(16));
+        }catch (\Exception $e){
+            throw $e;
+        }
+
+        $json = array(
             "version" => KeyCurrentVersion,
-            "id" => Crypto::guidv4(random_bytes(16)),
+            "id" => $uuid,
             "address" => $this->getAddressString(),
             'crypto' => array(
                 'ciphertext' => bin2hex($ciphertext),
@@ -194,16 +221,20 @@ class Account
 
             ),
         );
-
+        return json_encode($json);
     }
 
-    function toKeyString($password, array $opts = []){
-        return json_encode($this->toKey($password, $opts));
-    }
-
-    function fromKey($input, string $password){
+    /**
+     * Restore account from key-store json string.
+     *
+     * @param $input the key-store string
+     * @param string $password the password for this key-store json
+     * @return Account  the restored account
+     * @throws \Exception
+     */
+    static function fromKey($input, string $password){
         $json = json_decode($input);
-        //print_r($json);
+
         if($json->version !== KeyVersion3 && $json->version !== KeyCurrentVersion)
             throw new \Exception('Not supported wallet version');
 
@@ -221,15 +252,12 @@ class Account
 
         $derivedKeyBin = hex2bin($derivedKey);
         $ciphertext = hex2bin($json->crypto->ciphertext);
-        //echo "ciphertext: ", bin2hex($ciphertext), PHP_EOL;
         $method = $json->crypto->cipher;
         $iv = hex2bin($json->crypto->cipherparams->iv);
 
         if($json->version === KeyCurrentVersion){
             $mac = hash('sha3-256', substr($derivedKeyBin,16,32) . $ciphertext . $iv . $method );
-            //echo "mac: ", $mac, PHP_EOL;
         }else{
-            //echo "version 3 ", PHP_EOL;
             $mac = hash('sha3-256', substr($derivedKeyBin,16,32) . $ciphertext);
         }
 
@@ -245,9 +273,9 @@ class Account
         }
 
         //echo "seed: ", bin2hex($seed) ,PHP_EOL;
+        //$this->setPrivateKey(bin2hex($seed));
 
-        $this->setPrivateKey(bin2hex($seed));
-        return $this;
+        return new static(bin2hex($seed));
 
     }
 

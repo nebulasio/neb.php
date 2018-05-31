@@ -11,37 +11,35 @@ namespace Neb\Neb;
 
 class Httprequest
 {
-    private $host;
+    public $host;
     private $timeout;
-    private $apiVersion;
 
-    function __construct($host = "https://testnet.nebulas.io",
-                         $timeout = 0,
-                         $apiVersion = "v1")
+    function __construct($host,              // = "https://testnet.nebulas.io",  todo: check host? how to check
+                         $timeout = 30)
     {
+        if(empty($host))
+            throw new \Exception("Host is empty.");
+
         $this->host = $host;
         $this->timeout = $timeout;
-        $this->apiVersion = $apiVersion;
     }
 
-    function createUrl($api){
-        return $this->host . '/' . $this->apiVersion . $api;
-    }
 
-    function request(string $method, string $api, string $payload){
+    function request(string $method, string $url, string $payload){
 
-        $url = $this->createUrl($api);
+        //$url = $this->createUrl($api);
         //echo $url, PHP_EOL;
 
         $curl=curl_init();
         $options = array(
             CURLOPT_URL => $url,
-            CURLOPT_HTTPHEADER => array("Content-type: application/json","Accept: application/json"),
+            CURLOPT_HTTPHEADER => array("Content-type: application/json"),
             CURLOPT_POSTFIELDS => $payload,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_CUSTOMREQUEST =>  strtoupper($method)
-
+            CURLOPT_CUSTOMREQUEST =>  strtoupper($method),
+            CURLOPT_TIMEOUT => $this->timeout       //or use CURLOPT_TIMEOUT_MS
         );
+
         curl_setopt_array($curl, $options);
         $result = curl_exec($curl);
         curl_close($curl);

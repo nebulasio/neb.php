@@ -12,8 +12,9 @@ require ('../vendor/autoload.php');
 use Neb\Neb\Httprequest;
 use Neb\Neb\Neb;
 
-$neb = new Neb();
-$neb->setRequest(new Httprequest("https://testnet.nebulas.io"));
+//$neb = new Neb();
+//$neb->setRequest(new Httprequest("https://testnet.nebulas.io"));
+$neb = new Neb(new Httprequest("https://testnet.nebulas.io"));
 
 $api = $neb->api;
 
