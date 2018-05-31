@@ -36,10 +36,14 @@ class HttpProvider
         return $this->host . '/' . $apiVersion . $api;
     }
 
-    function request(string $method, string $api, string $payload, string $apiVersion){ //todo: $method & $apiVersion 并作options(json)
+    function request(string $api, string $payload, string $apiVersion, /*object*/ $options){ //todo: $method & $apiVersion 并作options(json)
         $url = $this->createUrl($apiVersion, $api);
         //echo "url: ", $url, PHP_EOL;
-        return Http::request($method,  $url,  $payload, $this->timeout);
+
+        if(empty($options->method))
+            throw new \Exception("HTTP method has not specified.");
+
+        return Http::request($options->method,  $url,  $payload, $this->timeout);
     }
 
 

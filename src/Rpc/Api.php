@@ -130,10 +130,13 @@ class Api
     }
 
     function sendRequest(string $method, string $api, $param){
-        $action = $this->path . $api;       // e.g. "/user/accountstate"
+        $api = $this->path . $api;       // e.g. "/user/accountstate"
         $param = json_encode($param);       // e.g. "{"address":"n1H2Yb5Q6ZfKvs61htVSV4b1U2gr2GA9vo6","height":"0"}"
-        echo "payload: ", $param,PHP_EOL;
-        return $this->provider->request($method, $action, $param, $this->apiVersion);
+        //echo "payload: ", $param,PHP_EOL;
+        $options = (object) array(
+            "method" => $method,
+        );
+        return $this->provider->request($api, $param, $this->apiVersion, $options);
     }
 
     //e.g. https://testnet.nebulas.io/v1/user/getTransactionReceipt
