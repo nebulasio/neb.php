@@ -129,18 +129,25 @@ class Api
         return $this->sendRequest("post", "/dynasty", $param);
     }
 
+    function sendRequest(string $method, string $api, $param){
+        $action = $this->path . $api;       // e.g. "/user/accountstate"
+        $param = json_encode($param);       // e.g. "{"address":"n1H2Yb5Q6ZfKvs61htVSV4b1U2gr2GA9vo6","height":"0"}"
+        echo "payload: ", $param,PHP_EOL;
+        return $this->request->request($method, $action, $param, $this->apiVersion);
+    }
+
     //e.g. https://testnet.nebulas.io/v1/user/getTransactionReceipt
-    function createUrl($api){
-        return $this->request->host . '/' . $this->apiVersion . $this->path . $api;        //
-    }
+//    function createUrl($api){
+//        return $this->request->host . '/' . $this->apiVersion . $this->path . $api;        //
+//    }
 
-     private function sendRequest(string $method, string $api, $param){
-        //$action = $this->path . $api;
-        $url = $this->createUrl($api);
-        //echo "url: ", $url, PHP_EOL;
-
-        $param = json_encode($param);
-        return $this->request->request($method, $url, $param);
-    }
+//     private function sendRequest(string $method, string $api, $param){
+//        //$action = $this->path . $api;
+//        $url = $this->createUrl($api);
+//        //echo "url: ", $url, PHP_EOL;
+//
+//        $param = json_encode($param);
+//        return $this->request->request($method, $url, $param);
+//    }
 
 }

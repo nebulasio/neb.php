@@ -8,6 +8,7 @@
 
 namespace Nebulas\Rpc;
 
+use Nebulas\Utils\Http;
 
 class Httprequest
 {
@@ -30,27 +31,16 @@ class Httprequest
         $this->timeout = $timeout;
     }
 
-
-    function request(string $method, string $url, string $payload){
-
-        //$url = $this->createUrl($api);
-        //echo $url, PHP_EOL;
-
-        $curl=curl_init();
-        $options = array(
-            CURLOPT_URL => $url,
-            CURLOPT_HTTPHEADER => array("Content-type: application/json"),
-            CURLOPT_POSTFIELDS => $payload,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_CUSTOMREQUEST =>  strtoupper($method),
-            CURLOPT_TIMEOUT => $this->timeout       //or use CURLOPT_TIMEOUT_MS
-        );
-
-        curl_setopt_array($curl, $options);
-        $result = curl_exec($curl);
-        curl_close($curl);
-        return $result;
-
+    //e.g. https://testnet.nebulas.io/v1/user/getTransactionReceipt
+    function createUrl($apiVersion, $api){
+        return $this->host . '/' . $apiVersion . $api;
     }
+
+    function request(string $method, string $api, string $payload, string $apiVersion){
+        $url = $this->createUrl($apiVersion, $api);
+        //echo "url: ", $url, PHP_EOL;
+        return Http::request($method,  $url,  $payload, $this->timeout);
+    }
+
 
 }
