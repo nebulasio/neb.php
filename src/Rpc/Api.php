@@ -8,24 +8,24 @@
 
 namespace Nebulas\Rpc;
 
-use Nebulas\Rpc\Httprequest;
+use Nebulas\Rpc\HttpProvider;
 use Nebulas\Rpc\Neb;
 
 class Api
 {
-    private  $request;
+    private  $provider;
     private $path;
     private $apiVersion;
 
 
     function __construct(Neb $neb, $apiVersion)
     {
-        $this->setRequest($neb->request);
+        $this->setProvidr($neb->provider);
         $this->apiVersion = $apiVersion;
     }
 
-    public function setRequest( $request){
-        $this->request = $request;
+    public function setProvidr($provider){
+        $this->provider = $provider;
         $this->path = "/user";
     }
 
@@ -40,10 +40,10 @@ class Api
         return $this->sendRequest("get", "/lib", $param);
     }
 
-    public function getAccountState(string $address,string $height = '0'){
+    public function getAccountState(string $address,int $height = 0){
         $param = array(
             "address" => $address,
-            "height" => $height
+            "height" => $height     //todo
         );
         return $this->sendRequest("post", "/accountstate", $param);
     }
@@ -56,7 +56,7 @@ class Api
             "nonce" => $nonce,
             "gasPrice" => $gasprice,
             "gasLimit" => $gasLimit,
-            "contract" => $contract,
+            "contract" => $contract,        //todo: check type & binary
         );
         return $this->sendRequest("post", "/call", $param);
     }
@@ -114,7 +114,7 @@ class Api
             "gasPrice" => $gasPrice,
             "gasLimit" => $gasLimit,
             "contract" => $contract,
-            "binary" => $binary,
+            "binary" => $binary,        //todo: check type
         );
         return $this->sendRequest("post", "/estimateGas", $param);
     }
@@ -133,7 +133,7 @@ class Api
         $action = $this->path . $api;       // e.g. "/user/accountstate"
         $param = json_encode($param);       // e.g. "{"address":"n1H2Yb5Q6ZfKvs61htVSV4b1U2gr2GA9vo6","height":"0"}"
         echo "payload: ", $param,PHP_EOL;
-        return $this->request->request($method, $action, $param, $this->apiVersion);
+        return $this->provider->request($method, $action, $param, $this->apiVersion);
     }
 
     //e.g. https://testnet.nebulas.io/v1/user/getTransactionReceipt

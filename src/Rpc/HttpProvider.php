@@ -10,14 +10,14 @@ namespace Nebulas\Rpc;
 
 use Nebulas\Utils\Http;
 
-class Httprequest
+class HttpProvider
 {
     public $host;
     private $timeout;
 
 
     /**
-     * Httprequest constructor.
+     * HttpProvider constructor.
      * @param string $host url, such as for testnet: "https://testnet.nebulas.io"
      * @param int $timeout the maximum number of seconds to allow cURL functions to execute.
      * @throws \Exception if $host is empty.
@@ -36,7 +36,7 @@ class Httprequest
         return $this->host . '/' . $apiVersion . $api;
     }
 
-    function request(string $method, string $api, string $payload, string $apiVersion){
+    function request(string $method, string $api, string $payload, string $apiVersion){ //todo: $method & $apiVersion 并作options(json)
         $url = $this->createUrl($apiVersion, $api);
         //echo "url: ", $url, PHP_EOL;
         return Http::request($method,  $url,  $payload, $this->timeout);

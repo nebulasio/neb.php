@@ -9,12 +9,12 @@
 
 require ('../vendor/autoload.php');
 
-use Nebulas\Rpc\Httprequest;
+use Nebulas\Rpc\HttpProvider;
 use Nebulas\Rpc\Neb;
 
 //$neb = new Neb();
-//$neb->setRequest(new Httprequest("https://testnet.nebulas.io"));
-$neb = new Neb(new Httprequest("https://testnet.nebulas.io"));
+//$neb->setRequest(new HttpProvider("https://testnet.nebulas.io"));
+$neb = new Neb(new HttpProvider("https://testnet.nebulas.io"));
 
 $api = $neb->api;
 

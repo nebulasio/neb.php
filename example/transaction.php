@@ -9,7 +9,7 @@
 require ('../vendor/autoload.php');
 
 use Nebulas\Rpc\Neb;
-use Nebulas\Rpc\Httprequest;
+use Nebulas\Rpc\HttpProvider;
 use Nebulas\Core\Account;
 use Nebulas\Core\Transaction;
 use Nebulas\Core\TransactionBinaryPayload;
@@ -17,7 +17,7 @@ use Nebulas\Core\TransactionCallPayload;
 
 
 $neb = new Neb();
-$neb->setRequest(new Httprequest("https://testnet.nebulas.io"));
+$neb->setProvider(new HttpProvider("https://testnet.nebulas.io"));
 
 $keyJson = '{"version":4,"id":"814745d0-9200-42bd-a4df-557b2d7e1d8b","address":"n1H2Yb5Q6ZfKvs61htVSV4b1U2gr2GA9vo6","crypto":{"ciphertext":"fb831107ce71ed9064fca0de8d514d7b2ba0aa03aa4fa6302d09fdfdfad23a18","cipherparams":{"iv":"fb65caf32f4dbb2593e36b02c07b8484"},"cipher":"aes-128-ctr","kdf":"scrypt","kdfparams":{"dklen":32,"salt":"dddc4f9b3e2079b5cc65d82d4f9ecf27da6ec86770cb627a19bc76d094bf9472","n":4096,"r":8,"p":1},"mac":"1a66d8e18d10404440d2762c0d59d0ce9e12a4bbdfc03323736a435a0761ee23","machash":"sha3256"}}';
 $password = 'passphrase';

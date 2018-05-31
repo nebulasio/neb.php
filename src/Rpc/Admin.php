@@ -12,18 +12,18 @@ namespace Nebulas\Rpc;
 class Admin
 {
 
-    private $request;
+    private $provider;
     private $path;
     private $apiVersion;
 
     function __construct(Neb $neb, $apiVersion)
     {
-        $this->setRequest($neb->request);
+        $this->serProvider($neb->provider);
         $this->apiVersion = $apiVersion;
     }
 
-    public function setRequest( $request){
-        $this->request = $request;
+    public function serProvider($provider){
+        $this->provider = $provider;
         $this->path = "/admin";
     }
 

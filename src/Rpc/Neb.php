@@ -10,34 +10,34 @@ namespace Nebulas\Rpc;
 
 use Nebulas\Rpc\Api;
 use Nebulas\Rpc\Admin;
-use Nebulas\Rpc\Httprequest;
+use Nebulas\Rpc\HttpProvider;
 
 class Neb
 {
     public $api;
     public $admin;
-    public $request;
+    public $provider;
 
     /**
      * Neb constructor.
      *
-     * @param \Nebulas\Rpc\Httprequest|null $request
+     * @param \Nebulas\Rpc\HttpProvider|null $request
      * @param string $apiVersion  the nebulas api version,
      *
      */
-    public function __construct(Httprequest $request = null, $apiVersion = "v1")
+    public function __construct(HttpProvider $request = null, $apiVersion = "v1")
     {
 
-        $this->request = $request;
+        $this->provider = $request;
 
         $this->api = new Api($this, $apiVersion);
         $this->admin = new Admin($this, $apiVersion);
     }
 
-    public function setRequest(Httprequest $request){
-        $this->request = $request;
-        $this->api->setRequest($request);
-        $this->admin->setRequest($request);
+    public function setProvider(HttpProvider $provider){
+        $this->provider = $provider;
+        $this->api->setProvidr($provider);
+        $this->admin->serProvider($provider);
     }
 
 }
