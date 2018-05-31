@@ -6,9 +6,9 @@
  * Time: 17:35
  */
 
-namespace Neb\Neb;
+namespace Nebulas\Core;
 
-use Neb\Utils\Crypto;
+use Nebulas\Utils\Crypto;
 use StephenHill\Base58;
 
 define("AddressPrefix","19");
@@ -67,7 +67,7 @@ class Account
         return $addressHex;
     }
 
-      private static function _isValidAddress(string $address, $type = null):bool {  //todo isValidAccountAddress & isValidContractAddress & isValidAddress
+      private static function _isValidAddress(string $address, $type = null):bool {
         if(!is_string($address) || strlen($address) !== AddressStringLength)
             return false;
 

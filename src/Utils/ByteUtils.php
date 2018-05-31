@@ -6,7 +6,7 @@
  * Time: 10:49
  */
 
-namespace Neb\utils;
+namespace Nebulas\utils;
 
 
 class ByteUtils

@@ -6,7 +6,7 @@
  * Time: 16:07
  */
 
-namespace Neb\Neb;
+namespace Nebulas\Rpc;
 
 
 class Admin

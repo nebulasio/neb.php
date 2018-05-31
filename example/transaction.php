@@ -8,12 +8,12 @@
 
 require ('../vendor/autoload.php');
 
-use Neb\Neb\Neb;
-use Neb\Neb\Httprequest;
-use Neb\Neb\Account;
-use Neb\Neb\Transaction;
-use Neb\Neb\TransactionBinaryPayload;
-use Neb\Neb\TransactionCallPayload;
+use Nebulas\Rpc\Neb;
+use Nebulas\Rpc\Httprequest;
+use Nebulas\Core\Account;
+use Nebulas\Core\Transaction;
+use Nebulas\Core\TransactionBinaryPayload;
+use Nebulas\Core\TransactionCallPayload;
 
 
 $neb = new Neb();

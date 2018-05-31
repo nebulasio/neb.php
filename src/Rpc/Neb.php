@@ -6,11 +6,11 @@
  * Time: 11:46
  */
 
-namespace Neb\neb;
+namespace Nebulas\Rpc;
 
-use Neb\Neb\Api;
-use Neb\Neb\Admin;
-use Neb\Neb\Httprequest;
+use Nebulas\Rpc\Api;
+use Nebulas\Rpc\Admin;
+use Nebulas\Rpc\Httprequest;
 
 class Neb
 {
@@ -18,6 +18,13 @@ class Neb
     public $admin;
     public $request;
 
+    /**
+     * Neb constructor.
+     *
+     * @param \Nebulas\Rpc\Httprequest|null $request
+     * @param string $apiVersion  the nebulas api version,
+     *
+     */
     public function __construct(Httprequest $request = null, $apiVersion = "v1")
     {
 

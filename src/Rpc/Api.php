@@ -6,10 +6,10 @@
  * Time: 16:06
  */
 
-namespace Neb\Neb;
+namespace Nebulas\Rpc;
 
-use Neb\Neb\Httprequest;
-use Neb\Neb\Neb;
+use Nebulas\Rpc\Httprequest;
+use Nebulas\Rpc\Neb;
 
 class Api
 {
@@ -134,10 +134,11 @@ class Api
         return $this->request->host . '/' . $this->apiVersion . $this->path . $api;        //
     }
 
-    function sendRequest(string $method, string $api, $param){      //todo: createUrl
+     private function sendRequest(string $method, string $api, $param){
         //$action = $this->path . $api;
         $url = $this->createUrl($api);
         //echo "url: ", $url, PHP_EOL;
+
         $param = json_encode($param);
         return $this->request->request($method, $url, $param);
     }

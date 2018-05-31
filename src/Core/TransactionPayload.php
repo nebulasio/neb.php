@@ -6,11 +6,11 @@
  * Time: 22:27
  */
 
-namespace Neb\Neb;
+namespace Nebulas\Core;
 
 
 interface TransactionPayload
 {
     public function toBytes();
-    public function toString();
+    //public function toString();
 }

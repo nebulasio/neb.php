@@ -6,7 +6,7 @@
  * Time: 17:25
  */
 
-namespace Neb\Neb;
+namespace Nebulas\Rpc;
 
 
 class Httprequest
@@ -14,8 +14,14 @@ class Httprequest
     public $host;
     private $timeout;
 
-    function __construct($host,              // = "https://testnet.nebulas.io",  todo: check host? how to check
-                         $timeout = 30)
+
+    /**
+     * Httprequest constructor.
+     * @param string $host url, such as for testnet: "https://testnet.nebulas.io"
+     * @param int $timeout the maximum number of seconds to allow cURL functions to execute.
+     * @throws \Exception if $host is empty.
+     */
+    function __construct(string $host, $timeout = 30)
     {
         if(empty($host))
             throw new \Exception("Host is empty.");

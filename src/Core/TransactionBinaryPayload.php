@@ -6,7 +6,7 @@
  * Time: 0:23
  */
 
-namespace Neb\Neb;
+namespace Nebulas\Core;
 
 
 class TransactionBinaryPayload implements TransactionPayload
@@ -15,6 +15,9 @@ class TransactionBinaryPayload implements TransactionPayload
 
     function __construct(string $data = null)
     {
+        if(strlen($data)>64)
+            throw new \Exception("Payload length exceeds 64 Bytes.");
+
         $this->Data = $data;
     }
 
@@ -27,10 +30,6 @@ class TransactionBinaryPayload implements TransactionPayload
         //return json_encode($this);
         return $this->Data;
     }
-    function toString()
-    {
-        //return json_encode($this);
-        return $this->Data;
-    }
+
 
 }

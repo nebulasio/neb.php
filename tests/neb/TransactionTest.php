@@ -10,10 +10,10 @@ namespace Test\neb;
 
 require('../../vendor/autoload.php');
 
-use Neb\Neb\Transaction;
-use Neb\Neb\Account;
+use Neb\Core\Transaction;
+use Neb\Core\Account;
 use PHPUnit\Framework\TestCase;
-use Neb\Neb\TransactionBinaryPayload;
+use Neb\Core\TransactionBinaryPayload;
 
 class TransactionTest extends TestCase
 {

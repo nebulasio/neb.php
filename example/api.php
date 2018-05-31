@@ -9,8 +9,8 @@
 
 require ('../vendor/autoload.php');
 
-use Neb\Neb\Httprequest;
-use Neb\Neb\Neb;
+use Nebulas\Rpc\Httprequest;
+use Nebulas\Rpc\Neb;
 
 //$neb = new Neb();
 //$neb->setRequest(new Httprequest("https://testnet.nebulas.io"));

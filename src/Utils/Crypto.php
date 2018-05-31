@@ -6,10 +6,10 @@
  * Time: 20:26
  */
 
-namespace Neb\Utils;
+namespace Nebulas\Utils;
 
-use Phactor\Key;
-use Mdanter\Ecc\EccFactory;
+//use Phactor\Key;
+//use Mdanter\Ecc\EccFactory;
 use Elliptic\EC;
 use StephenHill\Base58;
 

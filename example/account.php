@@ -7,7 +7,7 @@
  */
 require ('../vendor/autoload.php');
 
-use Neb\Neb\Account;
+use Nebulas\Core\Account;
 
 echo "Hello, neb.php!",PHP_EOL,PHP_EOL;
 

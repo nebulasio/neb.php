@@ -8,7 +8,7 @@
 
 namespace Test\neb;
 
-use Neb\Neb\Account;
+use Neb\Core\Account;
 use PHPUnit\Framework\TestCase;
 
 class AccountTest extends TestCase

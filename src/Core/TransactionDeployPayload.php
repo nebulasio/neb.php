@@ -6,7 +6,7 @@
  * Time: 11:42
  */
 
-namespace Neb\Neb;
+namespace Nebulas\Core;
 
 
 class TransactionDeployPayload implements TransactionPayload
@@ -32,8 +32,5 @@ class TransactionDeployPayload implements TransactionPayload
     {
         return json_encode($this);
     }
-    function toString()
-    {
-        return json_encode($this);
-    }
+
 }

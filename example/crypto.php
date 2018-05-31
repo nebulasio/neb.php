@@ -7,7 +7,7 @@
  */
 require ('../vendor/autoload.php');
 
-use Neb\Utils\Crypto;
+use Nebulas\Utils\Crypto;
 
 
 $hash = "bd1d8e4fc93a2bdf4b0c93c9cacf8a908f9abe65afb82f0ed4bb08ed87662a21";
@@ -18,7 +18,7 @@ $signBin = Crypto::sign(($hash),$privKey); //verify spec256k1 sign
 echo "get tx sign length: ", strlen($signBin) , PHP_EOL;
 echo "get tx   sign: ", bin2hex($signBin) , PHP_EOL;
 
-echo "expented sign: ", "2aec7ad2a986a973cf0c4402984bc3009fff5651fc29bf8463ba4e5872954dc0785599558def2d88fcff2f993da08e46cd22d41b812f7de61afaa9bbe482743d00" , PHP_EOL;
+echo "expected sign: ", "2aec7ad2a986a973cf0c4402984bc3009fff5651fc29bf8463ba4e5872954dc0785599558def2d88fcff2f993da08e46cd22d41b812f7de61afaa9bbe482743d00" , PHP_EOL;
 
 
 

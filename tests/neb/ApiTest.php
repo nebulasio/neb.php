@@ -8,7 +8,7 @@
 
 namespace Test\neb;
 
-use Neb\Neb\Api;
+use Neb\Core\Api;
 use PHPUnit\Framework\TestCase;
 
 class ApiTest extends TestCase

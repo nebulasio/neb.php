@@ -24,7 +24,7 @@ please refer to [examples](/example) to learn how to use neb.php.
 #### Account 
 
 ```php
-use Neb\neb\Account;
+use Nebulas\Core\Account;
 
 $account = Account::newAccount();
 //$account = new Account();     //This is the same as above
@@ -36,8 +36,8 @@ $keyStore = $account->toKey();  //Please save your keyStore(json) in to file and
 #### API
 
 ```php
-use Neb\Neb\Httprequest;
-use Neb\Neb\Neb;
+use Nebulas\Rpc\Httprequest;
+use Nebulas\Rpc\Neb;
 
 $neb = new Neb(new Httprequest("https://testnet.nebulas.io"));
 
@@ -49,12 +49,12 @@ echo $api->getTransactionReceipt("8b98a5e4a27d2744a6295fe71e4f138d3e423ced11c81e
 #### Transaction
 
 ```php
-use Neb\Neb\Neb;
-use Neb\Neb\Httprequest;
-use Neb\Neb\Account;
-use Neb\Neb\Transaction;
-use Neb\Neb\TransactionBinaryPayload;
-use Neb\Neb\TransactionCallPayload;
+use Nebulas\Rpc\Neb;
+use Nebulas\Rpc\Httprequest;
+use Nebulas\Core\Account;
+use Nebulas\Core\Transaction;
+use Nebulas\Core\TransactionBinaryPayload;
+use Nebulas\Core\TransactionCallPayload;
 
 $neb = new Neb();
 $neb->setRequest(new Httprequest("https://testnet.nebulas.io"));

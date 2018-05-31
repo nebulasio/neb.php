@@ -6,12 +6,12 @@
  * Time: 20:24
  */
 
-namespace Neb\Neb;
+namespace Nebulas\Core;
 
-use Neb\Neb\Account;
+use Nebulas\Core\Account;
 use Corepb\Data;
-use Neb\Utils\ByteUtils;
-use Neb\Utils\Crypto;
+use Nebulas\Utils\ByteUtils;
+use Nebulas\Utils\Crypto;
 use StephenHill\Base58;
 
 class Transaction
@@ -19,7 +19,6 @@ class Transaction
     private $chainID;
     private $from;  //Account object
     private $to;    //base58 address
-    private $toBinary;  //binary account address
     private $value;
     private $nonce;
     private $timestamp;
@@ -35,19 +34,30 @@ class Transaction
     const DEPLOY = "deploy";
     const CALL = "call";
 
-
+    /**
+     * Transaction constructor.
+     * @param int $chainID
+     * @param \Nebulas\Core\Account $from
+     * @param string $to
+     * @param string $value
+     * @param int $nonce
+     * @param string $gasPrice
+     * @param string $gasLimit
+     * @param string $payloadType
+     * @param TransactionPayload|null $payload
+     * @throws \Exception
+     */
     function __construct(int $chainID, Account $from, string $to, string $value, int $nonce,
                          string $gasPrice = '0', string $gasLimit = '0',
                          string $payloadType = Transaction::BINARY, TransactionPayload $payload = null)
     {
 
-        if(!Account::isValidAddress($to))       //todo: 是否需要判断 并抛出异常
+        if(!Account::isValidAddress($to))
             throw new \Exception("Invalid receiver address");
 
         $this->chainID = $chainID;
         $this->from = $from;
         $this->to = $to;
-        $this->toBinary = $this->decodeAddress($to);    //decode and get binary address string
         $this->value = $value;
         $this->nonce = $nonce;
         $this->timestamp = floor(strtotime("now"));
@@ -73,13 +83,24 @@ class Transaction
 
     }
 
+    /**
+     * Decode Base58 address into binary raw string
+     *
+     * @param $address
+     * @return string
+     * @throws \Exception
+     */
     private function decodeAddress($address){
         $base58 = new Base58();
-        $addressBin = $base58->decode($address);
-        return $addressBin;
+        return $base58->decode($address);
     }
 
-    function data2Proto($payloadType,$payload){
+    /**
+     * @param $payloadType
+     * @param $payload
+     * @return Data
+     */
+    private function newData($payloadType, $payload){     //todo rename newData()
         $data = new Data();
         $data->setPayloadType($payloadType);
         $data->setPayload($payload);
@@ -90,12 +111,12 @@ class Transaction
     function hashTransaction(){
         $hashArgs = hex2bin( $this->from->getAddress());
         //$hashArgs .= $this->to->getAddress();
-        $hashArgs .= $this->toBinary;
+        $hashArgs .= $this->decodeAddress($this->to);
         $hashArgs .= ByteUtils::padToBigEndian($this->value,16);
         $hashArgs .= ByteUtils::padToBigEndian($this->nonce,8);
         $hashArgs .= ByteUtils::padToBigEndian($this->timestamp,8);
         //$hashArgs .= $this->data;
-        $hashArgs .= $this->data2Proto( $this->data["payloadType"],$this->data["payload"])->serializeToString();
+        $hashArgs .= $this->newData( $this->data["payloadType"],$this->data["payload"])->serializeToString();
         $hashArgs .= ByteUtils::padToBigEndian($this->chainID,4);
         $hashArgs .= ByteUtils::padToBigEndian($this->gasPrice,16);
         $hashArgs .= ByteUtils::padToBigEndian($this->gasLimit,16);
@@ -109,9 +130,9 @@ class Transaction
         if(empty($privKey))
             throw new \Exception("transaction sender address's private key is invalid");
 
-        $signBin = Crypto::sign(bin2hex($this->hash),$privKey); //->toDER('hex');
+        $this->sign = Crypto::sign(bin2hex($this->hash),$privKey);  //
         //echo "got tx sign: ", bin2hex($signBin), PHP_EOL;
-        $this->sign = $signBin;
+
     }
 
     function toString(){
@@ -137,7 +158,11 @@ class Transaction
         return json_encode($txArray);
     }
 
-    function toProto(){
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function toProtoString(){
         if(empty($this->sign))
             throw new \Exception("You should sign transaction before this operation.");
 
@@ -145,26 +170,23 @@ class Transaction
         $tx->setHash($this->hash);
         $tx->setFrom(hex2bin($this->from->getAddress()));
         //$tx->setTo($this->to->getAddress());
-        $tx->setTo($this->toBinary);
+        $tx->setTo($this->decodeAddress($this->to));
 
         $tx->setValue(ByteUtils::padToBigEndian($this->value,16));
         $tx->setNonce($this->nonce);
         $tx->setTimestamp($this->timestamp);
-        $tx->setData($this->data2Proto( $this->data["payloadType"],$this->data["payload"]));
+        $tx->setData($this->newData( $this->data["payloadType"],$this->data["payload"]));
         $tx->setChainId($this->chainID);
         $tx->setGasPrice(ByteUtils::padToBigEndian($this->gasPrice,16));
         $tx->setGasLimit(ByteUtils::padToBigEndian($this->gasLimit,16));
         $tx->setAlg($this->alg);
         $tx->setSign($this->sign);
 
-        return $tx->serializeToString();
+        $proto = $tx->serializeToString();
+        return base64_encode($proto);
     }
 
-    function toProtoString(){
-        return base64_encode($this->toProto());
-    }
-
-    function fromProto(){}
+    function fromProtoString(){}
 
 }
 

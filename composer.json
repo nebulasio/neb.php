@@ -17,7 +17,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Neb\\": "src/",
+      "Nebulas\\": "src/",
       "Corepb\\": "src/proto/dist/Corepb",
       "GPBMetadata\\":"src/proto/dist/GPBMetadata",
       "Rpcpb\\":"src/proto/dist/Rpcpb"
