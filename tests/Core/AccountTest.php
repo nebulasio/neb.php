@@ -6,9 +6,9 @@
  * Time: 23:35
  */
 
-namespace Test\neb;
+namespace Test\Rpc;
 
-use Neb\Core\Account;
+use Nebulas\Core\Account;
 use PHPUnit\Framework\TestCase;
 
 class AccountTest extends TestCase

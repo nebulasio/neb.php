@@ -6,14 +6,14 @@
  * Time: 23:48
  */
 
-namespace Test\neb;
+namespace Test\Rpc;
 
 require('../../vendor/autoload.php');
 
-use Neb\Core\Transaction;
-use Neb\Core\Account;
+use Nebulas\Core\Transaction;
+use Nebulas\Core\Account;
 use PHPUnit\Framework\TestCase;
-use Neb\Core\TransactionBinaryPayload;
+use Nebulas\Core\TransactionBinaryPayload;
 
 class TransactionTest extends TestCase
 {
@@ -61,15 +61,6 @@ class TransactionTest extends TestCase
 
     }
 
-    public function testToString()
-    {
-
-    }
-
-    public function testToProto()
-    {
-
-    }
 
     public function testToProtoString()
     {

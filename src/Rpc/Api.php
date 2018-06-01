@@ -10,10 +10,11 @@ namespace Nebulas\Rpc;
 
 use Nebulas\Rpc\HttpProvider;
 use Nebulas\Rpc\Neb;
+use Nebulas\Utils\Utils;
 
 class Api
 {
-    private  $provider;
+    private $provider;
     private $path;
     private $apiVersion;
 
@@ -43,7 +44,7 @@ class Api
     public function getAccountState(string $address,int $height = 0){
         $param = array(
             "address" => $address,
-            "height" => $height     //todo
+            "height" => $height
         );
         return $this->sendRequest("post", "/accountstate", $param);
     }
@@ -105,7 +106,11 @@ class Api
         return $this->sendRequest("get", "/getGasPrice", $param);
     }
 
-    public function estimateGas(string $from, $to, $value, $nonce, $gasPrice, $gasLimit, array $contract = null, string $binary = null){
+    public function estimateGas(string $from, string $to,
+                                string $value, $nonce,      //todo $nonce int or string
+                                $gasPrice, $gasLimit,
+                                string $type = null, array $contract = null, string $binary = null)
+    {
         $param = array(
             "from" => $from,
             "to" => $to,
@@ -113,6 +118,7 @@ class Api
             "nonce" => $nonce,
             "gasPrice" => $gasPrice,
             "gasLimit" => $gasLimit,
+            "type" => $type,
             "contract" => $contract,
             "binary" => $binary,        //todo: check type
         );
@@ -129,28 +135,17 @@ class Api
         return $this->sendRequest("post", "/dynasty", $param);
     }
 
-    function sendRequest(string $method, string $api, $param){
+    function sendRequest(string $method, string $api, array $param){
         $api = $this->path . $api;       // e.g. "/user/accountstate"
-        $param = json_encode($param);       // e.g. "{"address":"n1H2Yb5Q6ZfKvs61htVSV4b1U2gr2GA9vo6","height":"0"}"
+        //$param = json_encode($param);       // e.g. "{"address":"n1H2Yb5Q6ZfKvs61htVSV4b1U2gr2GA9vo6","height":"0"}"
+        $param = Utils::JsonEncode($param);
         //echo "payload: ", $param,PHP_EOL;
+
         $options = (object) array(
             "method" => $method,
         );
         return $this->provider->request($api, $param, $this->apiVersion, $options);
     }
 
-    //e.g. https://testnet.nebulas.io/v1/user/getTransactionReceipt
-//    function createUrl($api){
-//        return $this->request->host . '/' . $this->apiVersion . $this->path . $api;        //
-//    }
-
-//     private function sendRequest(string $method, string $api, $param){
-//        //$action = $this->path . $api;
-//        $url = $this->createUrl($api);
-//        //echo "url: ", $url, PHP_EOL;
-//
-//        $param = json_encode($param);
-//        return $this->request->request($method, $url, $param);
-//    }
 
 }

@@ -2,25 +2,25 @@
 /**
  * Created by PhpStorm.
  * User: yupna
- * Date: 2018/5/31
- * Time: 19:21
+ * Date: 2018/6/1
+ * Time: 23:46
  */
 
 namespace Test\Core;
 
-use Nebulas\Core\TransactionCallPayload;
+use Nebulas\Core\TransactionDeployPayload;
 use PHPUnit\Framework\TestCase;
 
-class TransactionCallPayloadTest extends TestCase
+class TransactionDeployPayloadTest extends TestCase
 {
 
     //normal function name
-    public function providerValidFunc()
+    public function providerValidSource()
     {
         return array(
-            array("abcdABCD1234"),
-            array("A___B"),
-            array("A12B_")
+            array("12134567"),
+            array("asdfgjkhj"),
+            array("!@#$%^&123456")
         );
     }
     //normal args name
@@ -36,15 +36,10 @@ class TransactionCallPayloadTest extends TestCase
         );
     }
     //invalid function name
-    public function providerInvalidFunc()
+    public function providerInvalidSource()
     {
         return array(
             array(""),
-            //array(null),
-            array("_abc"),
-            array("123"),
-            array("[1ab_"),
-            array("-abCD")
         );
     }
     //invalid args
@@ -64,17 +59,17 @@ class TransactionCallPayloadTest extends TestCase
         $this->expectExceptionMessageRegExp('/Payload length exceeds max*/');
         $args = str_repeat("s",128*1024);
         echo "arg length: ", strlen($args)/1024.0, "K ", PHP_EOL;
-        new TransactionCallPayload("function", $args);
+        new TransactionDeployPayload("js","function", $args);
     }
 
     /**
-     * @dataProvider providerValidFunc
+     * @dataProvider providerValidSource
      */
-    function testCheckArgs_ValidFunc($func)
+    function testCheckArgs_ValidSource($func)
     {
         echo "test function name: ", $func, PHP_EOL;
-        $t = new TransactionCallPayload($func, "");
-        self::assertInstanceOf('\Nebulas\Core\TransactionCallPayload', $t);
+        $t = new TransactionDeployPayload("js", $func, "");
+        self::assertInstanceOf('\Nebulas\Core\TransactionDeployPayload', $t);
     }
 
     /**
@@ -83,19 +78,19 @@ class TransactionCallPayloadTest extends TestCase
     function testCheckArgs_ValidArg($arg)
     {
         echo "test arg name: ", $arg, PHP_EOL;
-        $t = new TransactionCallPayload("function", $arg);
-        self::assertInstanceOf('\Nebulas\Core\TransactionCallPayload', $t);
+        $t = new TransactionDeployPayload("js","source", $arg);
+        self::assertInstanceOf('\Nebulas\Core\TransactionDeployPayload', $t);
     }
 
     /**
-     * @dataProvider providerInvalidFunc
+     * @dataProvider providerInvalidSource
      */
-    function testCheckArgs_InvalidFunc($func)
+    function testCheckArgs_InvalidSource($func)
     {
-        $this->expectExceptionMessage("Invalid function name of call payload");
+        $this->expectExceptionMessage("Invalid source of deploy payload");
 
         echo "test function name: ", $func, PHP_EOL;
-        new TransactionCallPayload($func, "");
+        new TransactionDeployPayload("js", $func, "");
     }
 
     /**
@@ -106,8 +101,7 @@ class TransactionCallPayloadTest extends TestCase
         $this->expectExceptionMessage("Args is not an array of json");
 
         echo "test arg name: ", $args, PHP_EOL;
-        new TransactionCallPayload("function", $args);
+        new TransactionDeployPayload("js","source", $args);
     }
-
 
 }

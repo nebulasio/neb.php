@@ -8,6 +8,7 @@
 
 namespace Nebulas\Core;
 
+define("MaxBinaryPayLoadLength", 64);
 
 class TransactionBinaryPayload implements TransactionPayload
 {
@@ -15,8 +16,9 @@ class TransactionBinaryPayload implements TransactionPayload
 
     function __construct(string $data = null)
     {
-        if(strlen($data)>64)
+        if(strlen($data) > MaxBinaryPayLoadLength){
             throw new \Exception("Payload length exceeds 64 Bytes.");
+        }
 
         $this->Data = $data;
     }

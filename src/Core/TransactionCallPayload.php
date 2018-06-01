@@ -8,17 +8,20 @@
 
 namespace Nebulas\Core;
 
+use Nebulas\Utils\Utils;
+
+define("MaxCallPayLoadLength", 128 * 1024);
 
 class TransactionCallPayload implements TransactionPayload
 {
     public $Function;
     public $Args;
 
-    function __construct(string $func = null, string $args = null)
+    function __construct(string $func , string $args = null)
     {
-        //$this->checkArgs( $func,  $args);
         $this->Function = $func;
         $this->Args = $args;
+        $this->checkArgs( $func,  $args);
     }
 
 //    public static function loadPayload(string $data) {
@@ -30,20 +33,25 @@ class TransactionCallPayload implements TransactionPayload
 //    }
 
     function checkArgs(string $func, string $args){
-        if(!preg_match('/^[a-zA-Z$][A-Za-z0-9_$]*$/',$func)){
-            throw new \Exception("invalid function name of call payload");
+        if(strlen($this->toBytes()) > MaxCallPayLoadLength){
+            throw new \Exception("Payload length exceeds max length: ", MaxCallPayLoadLength);
+        }
+
+        if(!preg_match('/^[a-zA-Z$][A-Za-z0-9_$]*$/', $func)){
+            throw new \Exception("Invalid function name of call payload");
         }
         if(!empty($args)){
             $array = json_decode($args);
+
             if(!is_array($array)){
-                throw new \Exception("args is not an array of json");
+                throw new \Exception("Args is not an array of json");
             }
         }
     }
 
     function toBytes()
     {
-        return json_encode($this);
+        return Utils::JsonEncode($this);
     }
 
 }
