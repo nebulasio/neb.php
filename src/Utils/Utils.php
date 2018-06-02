@@ -16,12 +16,12 @@ class Utils
      *
      * @param array $array
      */
-    static public function JsonEncode( $array){
+    static public function JsonEncode( $array, $opts = null){
 
         $object = (object) array_filter((array)$array, function ($val){
             return !is_null($val);
         });
-        return json_encode($object);
+        return json_encode($object, $opts);
 
     }
 

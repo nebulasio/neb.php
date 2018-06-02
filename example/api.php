@@ -13,8 +13,9 @@ use Nebulas\Rpc\HttpProvider;
 use Nebulas\Rpc\Neb;
 
 //$neb = new Neb();
-//$neb->setRequest(new HttpProvider("https://testnet.nebulas.io"));
-$neb = new Neb(new HttpProvider("https://testnet.nebulas.io"));
+//$neb = new Neb(new HttpProvider("http://172.0.0.1:8685"));    //local node
+//$neb->setRequest(new HttpProvider("https://testnet.nebulas.io")); //mainnet
+$neb = new Neb(new HttpProvider("https://testnet.nebulas.io")); //testnet
 
 $api = $neb->api;
 
