@@ -28,6 +28,11 @@ class Admin
         $this->path = "/admin";
     }
 
+    /**
+     * Method get info about nodes in Nebulas Network.
+     * @see {@link https://github.com/nebulasio/wiki/blob/master/rpc_admin.md#nodeinfo}
+     * @return mixed
+     */
     public function nodeInfo(){
         $param = array();
         return $this->sendRequest("get", "/nodeinfo", $param);
@@ -89,6 +94,12 @@ class Admin
         return $this->sendRequest("post", "/account/unlock", $param);
     }
 
+    /**
+     * Lock account.
+     * @see {@link https://github.com/nebulasio/wiki/blob/master/rpc_admin.md#lockaccount}
+     * @param string $address
+     * @return mixed
+     */
     public function lockAccount(string $address){
         $param = array(
             'address' => $address
@@ -98,6 +109,7 @@ class Admin
 
     /**
      * Send transaction.
+     * The transaction's sender addrees must be unlocked before sendTransaction.
      * @see {@link https://github.com/nebulasio/wiki/blob/master/rpc_admin.md#sendtransaction}
      * <p>It's parameters is the same with api/calland api/estimateGas.
      * @param string $from
@@ -111,7 +123,7 @@ class Admin
      * @param string|null $binary
      * @return mixed
      */
-    public function sendTransaction(string $from, string $to,       //todo nonce 是int, 其他是string?
+    public function sendTransaction(string $from, string $to,
                                     string $value, int $nonce,
                                     string $gasPrice, string $gasLimit,
                                     string $type = null, array $contract = null, string $binary = null)
@@ -130,13 +142,32 @@ class Admin
         return $this->sendRequest("post", "/transaction", $param);
     }
 
+    /**
+     * Sign hash.
+     * The account must be unlocked before sign.
+     * @see {@link https://github.com/nebulasio/wiki/blob/master/rpc_admin.md#signhash}
+     *
+     * @param string $address account string
+     * @param string $hash  a base64 encoded  sha3-256 hash string
+     * @param int|null $alg the sign algorithm, an int value,
+     * @return mixed
+     */
+    public function signHash(string $address, string $hash, int $alg = 1){
+        $param = array(
+            'address' => $address,
+            'hash' => $hash,
+            'alg' => $alg
+        );
+        return $this->sendRequest("post", "/sign/hash", $param);
+    }
+
     public function signTransactionWithPassphrase(string $from, string $to,
                                                   string $value, string $nonce,
                                                   string $gasPrice, string $gasLimit,
                                                   string $type, string $contract, string $binary,
                                                   string $passphrase)
     {
-        $tx = array(             //todo: 顺序可以任意调整吧?
+        $tx = array(
             "from"     => $from,
             "to"       => $to,
             "value"    => $value,
@@ -154,7 +185,23 @@ class Admin
         return $this->sendRequest("post", "/sign", $param);
     }
 
-
+    /**
+     * Sign transaction with passphrase.
+     * The transaction's sender addrees must be unlock before send.
+     * @see {@link https://github.com/nebulasio/wiki/blob/master/rpc_admin.md#signtransactionwithpassphrase}
+     *
+     * @param string $from
+     * @param string $to
+     * @param string $value
+     * @param string $nonce
+     * @param string $gasPrice
+     * @param string $gasLimit
+     * @param string $type
+     * @param string $contract
+     * @param string $binary
+     * @param string $passphrase
+     * @return mixed
+     */
     public function sendTransactionWithPassphrase(string $from, string $to,
                                                   string $value, string $nonce,
                                                   string $gasPrice, string $gasLimit,
@@ -179,6 +226,16 @@ class Admin
         return $this->sendRequest("post", "/transactionWithPassphrase", $param);
     }
 
+    /**
+     * Start listen to provided port.
+     * @see {@link https://github.com/nebulasio/wiki/blob/master/rpc_admin.md#startpprof}
+     *
+     * @param string $listen the specified port
+     * @return mixed
+     * @example
+     *
+     *
+     */
     public function startPprof(string $listen){
         $param = array(
             'listen' => $listen
@@ -186,10 +243,14 @@ class Admin
         return $this->sendRequest("post", "/pprof", $param);
     }
 
-    public function getConfig(string $listen){
-        $param = array(
-            'listen' => $listen
-        );
+    /**
+     * Get config of node in Nebulas Network.
+     * @see {@link https://github.com/nebulasio/wiki/blob/master/rpc_admin.md#getConfig}
+     *
+     * @return mixed
+     */
+    public function getConfig(){
+        $param = array();
         return $this->sendRequest("get", "/getConfig", $param);
     }
 

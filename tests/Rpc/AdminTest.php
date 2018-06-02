@@ -19,7 +19,6 @@ define("ApiTestHost","http://172.16.1.6:8685");     //for local node
 
 class AdminTest extends TestCase
 {
-    private $newAccount;
     private $source = 'var Contract = function () {}
         Contract.prototype = {
           init: function () {
@@ -34,16 +33,20 @@ class AdminTest extends TestCase
         };                     
         module.exports = Contract;';
 
+    function getAccount(){
+        $neb = new Neb(new HttpProvider(ApiTestHost));
+        $result = $neb->admin->accounts();
+        //echo $result,PHP_EOL;
+        $Obj = json_decode($result);
+        return $Obj->result->addresses[0];
+    }
+
     public function testNewAccount()
     {
         $neb = new Neb(new HttpProvider(ApiTestHost));
         $result = $neb->admin->newAccount("passphrase");
         echo $result,PHP_EOL;
         self::assertStringStartsWith('{"result"', $result);
-        $Obj = json_decode($result);
-        $this->newAccount = $Obj->result->address;
-        echo "new account: ", $this->newAccount,PHP_EOL;
-
     }
 
     public function testAccounts()
@@ -56,11 +59,10 @@ class AdminTest extends TestCase
 
     public function testUnlockAccount()
     {
-        $account = "n1c3kQyTXJkCEejGrBLYkH4L4qSV9JxntyS";
-        //$account = $this->newAccount;
-        echo "account tobe unclocked: ", $account,PHP_EOL;
+        $account = $this->getAccount();
+        echo "account tobe unlocked: ", $account,PHP_EOL;
         $neb = new Neb(new HttpProvider(ApiTestHost));
-        $result = $neb->admin->unlockAccount($account,"passphrase");
+        $result = $neb->admin->unlockAccount($account,"passphrase", "300000000000");  //300s
         echo $result,PHP_EOL;
         self::assertStringStartsWith('{"result"', $result);
 
@@ -68,9 +70,8 @@ class AdminTest extends TestCase
 
     public function testLockAccount()
     {
-        $account = "n1c3kQyTXJkCEejGrBLYkH4L4qSV9JxntyS";
-        //$account = $this->newAccount;
-        echo "account tobe clocked: ", $account,PHP_EOL;
+        $account = $this->getAccount();
+        echo "account tobe locked: ", $account,PHP_EOL;
         $neb = new Neb(new HttpProvider(ApiTestHost));
         $result = $neb->admin->lockAccount($account);
         echo $result,PHP_EOL;
@@ -80,8 +81,7 @@ class AdminTest extends TestCase
 
     public function testSendTransaction()
     {
-        $account = "n1c3kQyTXJkCEejGrBLYkH4L4qSV9JxntyS";
-        //$account = $this->newAccount;
+        $account = $this->getAccount();
         $neb = new Neb(new HttpProvider(ApiTestHost));
         $neb->admin->unlockAccount($account,"passphrase");
         /**
@@ -132,23 +132,23 @@ class AdminTest extends TestCase
         /**
          * deploy
          */
-        $result = $neb->admin->sendTransaction($account,
-            $account,
-            "100000",
-            1,
-            "1000000",
-            "200000",
-            "deploy",
-            array(
-                'sourceType' => 'js',
-                'source' => $this->source
-            ),
-            null);
-        echo "deploy: ", $result,PHP_EOL;
-        self::assertStringStartsWith('{"result"', $result);
-        $Obj = json_decode($result);
-        $contract = $Obj->result->contract_address;
-        echo "contract address:  $contract",PHP_EOL,PHP_EOL;
+//        $result = $neb->admin->sendTransaction($account,
+//            $account,
+//            "100000",
+//            1,
+//            "1000000",
+//            "200000",
+//            "deploy",
+//            array(
+//                'sourceType' => 'js',
+//                'source' => $this->source
+//            ),
+//            null);
+//        echo "deploy: ", $result,PHP_EOL;
+//        self::assertStringStartsWith('{"result"', $result);
+//        $Obj = json_decode($result);
+//        $contract = $Obj->result->contract_address;
+//        echo "contract address:  $contract",PHP_EOL,PHP_EOL;
 
         /**
          * call
@@ -169,18 +169,16 @@ class AdminTest extends TestCase
         self::assertStringStartsWith('{"result"', $result);
     }
 
-    public function testSendTransactionWithPassphrase()
+    public function testSighHash()
     {
-
-    }
-
-    public function testStartPprof()
-    {
-
-    }
-
-    public function testGetConfig()
-    {
+        $account = "n1c3kQyTXJkCEejGrBLYkH4L4qSV9JxntyS";
+        $account = $this->getAccount();
+        $neb = new Neb(new HttpProvider(ApiTestHost));
+        $result = $neb->admin->signHash($account,
+             base64_encode(hash("sha3-256","any data", true)), //"W+rOKNqs/tlvz02ez77yIYMCOr2EubpuNh5LvmwceI0=",
+            1);
+        echo $result,PHP_EOL;
+        self::assertStringStartsWith('{"result"', $result);
 
     }
 
@@ -189,8 +187,32 @@ class AdminTest extends TestCase
 
     }
 
-    public function testNodeInfo()
+    public function testSendTransactionWithPassphrase()
     {
 
+    }
+
+    public function testStartPprof()
+    {
+        $neb = new Neb(new HttpProvider(ApiTestHost));
+        $result = $neb->admin->startPprof("8080");
+        echo $result,PHP_EOL;
+        self::assertStringStartsWith('{"result"', $result);
+    }
+
+    public function testGetConfig()
+    {
+        $neb = new Neb(new HttpProvider(ApiTestHost));
+        $result = $neb->admin->getConfig();
+        echo $result,PHP_EOL;
+        self::assertStringStartsWith('{"result"', $result);
+    }
+
+    public function testNodeInfo()
+    {
+        $neb = new Neb(new HttpProvider(ApiTestHost));
+        $result = $neb->admin->nodeInfo();
+        echo $result,PHP_EOL;
+        self::assertStringStartsWith('{"result"', $result);
     }
 }

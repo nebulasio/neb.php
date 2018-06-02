@@ -14,8 +14,8 @@ use Nebulas\Rpc\Neb;
 use Nebulas\Rpc\HttpProvider;
 use PHPUnit\Framework\TestCase;
 
-//define("ApiTestHost","https://testnet.nebulas.io");   //for testnet
-define("ApiTestHost","http://172.16.1.6:8685");     //for local node
+define("ApiTestHost","https://testnet.nebulas.io");   //for testnet
+//define("ApiTestHost","http://172.0.0.1:8685");     //for local node
 
 class ApiTest extends TestCase
 {
@@ -172,12 +172,17 @@ class ApiTest extends TestCase
 
     public function testGetBlockByHeight()
     {
-
+        $neb = new Neb(new HttpProvider(ApiTestHost));
+        $result = $neb->api->getDynasty(0);
+        self::assertStringStartsWith('{"result"', $result);
     }
 
     public function testGetNebState()
     {
-
+        $neb = new Neb(new HttpProvider(ApiTestHost));
+        $result = $neb->api->getNebState();
+        echo "NebState: $result", PHP_EOL;
+        self::assertStringStartsWith('{"result"', $result);
     }
 
     public function testGasPrice()
@@ -196,31 +201,36 @@ class ApiTest extends TestCase
 
     public function testGetBlockByHash()
     {
-
+        $neb = new Neb(new HttpProvider(ApiTestHost));
+        $result = $neb->api->getBlockByHash("5cce7b5e719b5af679dbc0f4166e9c8665eb03704eb33b97ccb59d4e4ba14352");
+        self::assertStringStartsWith('{"result"', $result);
     }
 
     public function testGetTransactionByContract()
     {
-
-    }
-
-    public function testSetRequest()
-    {
-
+        $neb = new Neb(new HttpProvider(ApiTestHost));
+        $result = $neb->api->getTransactionByContract("n1oXdmwuo5jJRExnZR5rbceMEyzRsPeALgm");
+        self::assertStringStartsWith('{"result"', $result);
     }
 
     public function testLatestIrreversibleBlock()
     {
-
+        $neb = new Neb(new HttpProvider(ApiTestHost));
+        $result = $neb->api->latestIrreversibleBlock();
+        self::assertStringStartsWith('{"result"', $result);
     }
 
     public function testGetDynasty()
     {
-
+        $neb = new Neb(new HttpProvider(ApiTestHost));
+        $result = $neb->api->getDynasty(1);
+        self::assertStringStartsWith('{"result"', $result);
     }
 
     public function testGetTransactionReceipt()
     {
-
+        $neb = new Neb(new HttpProvider(ApiTestHost));
+        $result = $neb->api->getTransactionReceipt("8b98a5e4a27d2744a6295fe71e4f138d3e423ced11c81e201c12ac8379226ad1");
+        self::assertStringStartsWith('{"result"', $result);
     }
 }
