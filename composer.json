@@ -1,5 +1,5 @@
 {
-  "name": "neb.php",
+  "name": "nebulas/neb.php",
   "description": "Nebulas sdk implemented with PHP",
   "license": "MIT",
   "require": {
