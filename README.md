@@ -13,8 +13,10 @@ neb.php requires the following:
 
 ## Installation
 
-We are going to publish neb.php to Composer. 
-Please clone this git for the present. 
+You can install this library via Composer:
+```sh
+composer require nebulas/neb.php
+```
 
 
 ## Usage
