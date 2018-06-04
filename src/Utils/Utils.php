@@ -14,7 +14,9 @@ class Utils
     /**
      * Encode array into json string and omit null value.
      *
-     * @param array $array
+     * @param $array
+     * @param null $opts
+     * @return string
      */
     static public function JsonEncode( $array, $opts = null){
 

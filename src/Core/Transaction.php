@@ -58,6 +58,8 @@ class Transaction
         $this->chainID = $chainID;
         $this->from = $from;
         $this->to = $to;
+        if(gmp_init($value,'0') < 0)
+            throw new \Exception("Invalid value.");
         $this->value = $value;
         $this->nonce = $nonce;
         $this->timestamp = floor(strtotime("now"));
