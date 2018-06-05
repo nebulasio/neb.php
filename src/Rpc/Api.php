@@ -74,7 +74,7 @@ class Api
      *
      * @param string $from
      * @param string $to
-     * @param string $value
+     * @param string $value note that it's unit is wei.
      * @param int $nonce
      * @param string $gasprice
      * @param string $gasLimit
@@ -197,6 +197,10 @@ class Api
         return $this->sendRequest("get", "/getGasPrice", $param);
     }
 
+    /**
+     * it's parameter is the same with {@code call}.
+     *
+     */
     public function estimateGas(string $from, string $to,
                                 string $value, $nonce,      //todo $nonce int or string
                                 $gasPrice, $gasLimit,

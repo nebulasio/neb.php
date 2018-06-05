@@ -164,7 +164,7 @@ class Account
      * @return string
      * @throws \Exception
      */
-    function toKey(string $password, array $opts = []){ //todo remove opts?? n/p/r
+    function toKeyStore(string $password, array $opts = []){ //todo remove opts?? n/p/r
         try{
             $salt = isset($opts['salt']) ? $opts['salt'] : random_bytes(32);
             $iv = isset($opts['iv']) ? $opts['iv'] : random_bytes(16);
@@ -232,7 +232,7 @@ class Account
      * @return Account  the restored account
      * @throws \Exception
      */
-    static function fromKey($input, string $password){
+    static function fromKeyStore($input, string $password){
         $json = json_decode($input);
 
         if($json->version !== KeyVersion3 && $json->version !== KeyCurrentVersion)

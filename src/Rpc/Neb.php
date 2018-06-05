@@ -18,6 +18,8 @@ class Neb
     public $admin;
     public $provider;
 
+    const MainNet = "https://mainnet.nebulas.io";
+    const TestNet = "https://testnet.nebulas.io";
     /**
      * Neb constructor.
      *

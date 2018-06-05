@@ -25,7 +25,7 @@ class AccountTest extends TestCase
     public function setUp()
     {
         //$this->account = Account::newAccount();
-        $this->account =Account::fromKey($this->keyJson, $this->password);
+        $this->account =Account::fromKeyStore($this->keyJson, $this->password);
     }
 
     public function testGetAddress()
@@ -107,16 +107,28 @@ class AccountTest extends TestCase
     {
         $password = "passphraseeee";
         $acc1 = Account::newAccount();
-        $keyString = $acc1->toKey($password);
+        $keyString = $acc1->toKeyStore($password);
 
-        $acc2 =Account::fromKey($keyString, $password);
+        $acc2 =Account::fromKeyStore($keyString, $password);
         self::assertEquals($acc1->getAddressString(), $acc2->getAddressString());
     }
 
 
-//    public function testNewAccount()
-//    {
-//
-//    }
+    public function testFromKey()
+    {
+        /**
+         * V3
+         */
+        $keyV3 = '{"version":3,"id":"ccdea027-bea5-4626-b5e4-53b987091b8d","address":"n1X1N4Jq7mhm3tK74AqE29Rdp97kdTWftzS","crypto":{"ciphertext":"0535aac6d78ad8ddfa2274b05c7a6fcfdb3b9fcff91ed59b1531ec8cd3671715","cipherparams":{"iv":"03e09e5994ad41df77b9c94ffa1ecd9e"},"cipher":"aes-128-ctr","kdf":"scrypt","kdfparams":{"dklen":32,"salt":"7237d1a9e755adbf7e6b1364b6c7a1c8101043b693e671357895684aa5c3e7f1","n":4096,"r":8,"p":1},"mac":"288ae2984d7d40d25f7261342ef5ec4f1b576dce3f2e324fa0483f710fb42fd3","machash":"sha3256"}}';
+        $acc = Account::fromKeyStore($keyV3,'passphrase');
+        self::assertTrue(Account::isValidAccountAddress($acc->getAddressString()));
+        /**
+         * V4
+         */
+        $keyV4 = '{"version":4,"id":"814745d0-9200-42bd-a4df-557b2d7e1d8b","address":"n1H2Yb5Q6ZfKvs61htVSV4b1U2gr2GA9vo6","crypto":{"ciphertext":"fb831107ce71ed9064fca0de8d514d7b2ba0aa03aa4fa6302d09fdfdfad23a18","cipherparams":{"iv":"fb65caf32f4dbb2593e36b02c07b8484"},"cipher":"aes-128-ctr","kdf":"scrypt","kdfparams":{"dklen":32,"salt":"dddc4f9b3e2079b5cc65d82d4f9ecf27da6ec86770cb627a19bc76d094bf9472","n":4096,"r":8,"p":1},"mac":"1a66d8e18d10404440d2762c0d59d0ce9e12a4bbdfc03323736a435a0761ee23","machash":"sha3256"}}';
+        $acc2 = Account::fromKeyStore($keyV4,'passphrase');
+        self::assertTrue(Account::isValidAccountAddress($acc2->getAddressString()));
+
+    }
 
 }
