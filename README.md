@@ -94,7 +94,7 @@ $result = $neb->api->sendRawTransaction($tx->toProtoString());
 
 We are happy to receive bug reports, fixes, documentation enhancements, and other improvements.
 
-Please report bugs via the [github issue]().
+Please report bugs via the [github issue](/issues).
 
 
 
