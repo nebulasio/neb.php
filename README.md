@@ -15,7 +15,14 @@ neb.php requires the following:
 
 You can install this library via Composer:
 ```sh
-composer require nebulas/neb.php
+composer require nebulas/neb.php:dev-master
+```
+
+Or add this in your composer.json:
+```jsom
+"require": {
+    "nebulas/neb.php": "dev-master"
+}
 ```
 
 
