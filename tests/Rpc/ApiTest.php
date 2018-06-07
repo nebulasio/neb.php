@@ -19,6 +19,7 @@ define("ApiTestHost","https://testnet.nebulas.io");   //for testnet
 
 class ApiTest extends TestCase
 {
+    //smart contract source code
     private $source = 'var Contract = function () {}
         Contract.prototype = {
           init: function () {
@@ -43,10 +44,10 @@ class ApiTest extends TestCase
         self::assertStringStartsWith('{"error":"transaction', $result);
     }
 
-    public function testSubscribe()
-    {
-
-    }
+//    public function testSubscribe()
+//    {
+//
+//    }
 
     public function testEstimateGas()
     {
@@ -129,7 +130,7 @@ class ApiTest extends TestCase
             "200000",
             "200000");
 
-        echo $result, PHP_EOL;
+        echo 'Call(binary type): ',$result, PHP_EOL;
         self::assertStringStartsWith('{"result"', $result);
         /**
          * call
@@ -140,8 +141,9 @@ class ApiTest extends TestCase
             0,
             "200000",
             "200000",
+            'call',
             array("function" => 'get', 'args' => '["nebulas"]'));
-        echo $result, PHP_EOL;
+        echo 'Call(call type): ',$result, PHP_EOL;
         self::assertStringStartsWith('{"result"', $result);
 
         /**
@@ -154,11 +156,12 @@ class ApiTest extends TestCase
             0,
             "200000",
             "200000",
+            'deploy',
             array(
                 "sourceType" => 'js',
                 "source" => $this->source
             ));
-        echo $result, PHP_EOL;
+        echo 'Call(deploy type): ',$result, PHP_EOL;
         self::assertStringStartsWith('{"result"', $result);
 
     }
@@ -167,13 +170,15 @@ class ApiTest extends TestCase
     {
         $neb = new Neb(new HttpProvider(ApiTestHost));
         $result = $neb->api->getEventsByHash("8b98a5e4a27d2744a6295fe71e4f138d3e423ced11c81e201c12ac8379226ad1");
+        echo "GetEventsByHash: ",$result, PHP_EOL;
         self::assertStringStartsWith('{"result"', $result);
     }
 
     public function testGetBlockByHeight()
     {
         $neb = new Neb(new HttpProvider(ApiTestHost));
-        $result = $neb->api->getDynasty(0);
+        $result = $neb->api->getBlockByHeight("100");
+        echo "GetBlockByHeight: ",$result, PHP_EOL;
         self::assertStringStartsWith('{"result"', $result);
     }
 
@@ -189,6 +194,7 @@ class ApiTest extends TestCase
     {
         $neb = new Neb(new HttpProvider(ApiTestHost));
         $result = $neb->api->gasPrice();
+        echo "GasPrice: ",$result, PHP_EOL;
         self::assertStringStartsWith('{"result"', $result);
     }
 
@@ -196,6 +202,7 @@ class ApiTest extends TestCase
     {
         $neb = new Neb(new HttpProvider(ApiTestHost));
         $result = $neb->api->getAccountState("n1H2Yb5Q6ZfKvs61htVSV4b1U2gr2GA9vo6");
+        echo "AccountState: ",$result, PHP_EOL;
         self::assertStringStartsWith('{"result"', $result);
     }
 
@@ -203,6 +210,7 @@ class ApiTest extends TestCase
     {
         $neb = new Neb(new HttpProvider(ApiTestHost));
         $result = $neb->api->getBlockByHash("5cce7b5e719b5af679dbc0f4166e9c8665eb03704eb33b97ccb59d4e4ba14352");
+        echo "GetBlockByHash: $result", PHP_EOL;
         self::assertStringStartsWith('{"result"', $result);
     }
 
@@ -210,6 +218,7 @@ class ApiTest extends TestCase
     {
         $neb = new Neb(new HttpProvider(ApiTestHost));
         $result = $neb->api->getTransactionByContract("n1oXdmwuo5jJRExnZR5rbceMEyzRsPeALgm");
+        echo "GetTransactionByContract: $result", PHP_EOL;
         self::assertStringStartsWith('{"result"', $result);
     }
 
@@ -217,6 +226,7 @@ class ApiTest extends TestCase
     {
         $neb = new Neb(new HttpProvider(ApiTestHost));
         $result = $neb->api->latestIrreversibleBlock();
+        echo "LatestIrreversibleBlock: $result", PHP_EOL;
         self::assertStringStartsWith('{"result"', $result);
     }
 
@@ -224,6 +234,7 @@ class ApiTest extends TestCase
     {
         $neb = new Neb(new HttpProvider(ApiTestHost));
         $result = $neb->api->getDynasty(1);
+        echo "Dynasty: $result", PHP_EOL;
         self::assertStringStartsWith('{"result"', $result);
     }
 
@@ -231,6 +242,7 @@ class ApiTest extends TestCase
     {
         $neb = new Neb(new HttpProvider(ApiTestHost));
         $result = $neb->api->getTransactionReceipt("8b98a5e4a27d2744a6295fe71e4f138d3e423ced11c81e201c12ac8379226ad1");
+        echo "TransactionReceipt: $result", PHP_EOL;
         self::assertStringStartsWith('{"result"', $result);
     }
 }

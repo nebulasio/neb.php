@@ -118,7 +118,7 @@ class Admin
      * @param int $nonce
      * @param string $gasPrice
      * @param string $gasLimit
-     * @param string|null $type //todo check: $contract 和 $binary 可以同时不为null吗?
+     * @param string|null $type
      * @param array|null $contract
      * @param string|null $binary
      * @return mixed
@@ -128,7 +128,7 @@ class Admin
                                     string $gasPrice, string $gasLimit,
                                     string $type = null, array $contract = null, string $binary = null)
     {
-        $param = array(             //todo: 顺序可以任意调整吧?
+        $param = array(
             "from"     => $from,
             "to"       => $to,
             "value"    => $value,
@@ -208,7 +208,7 @@ class Admin
                                                   string $type, string $contract, string $binary,
                                                   string $passphrase)
     {
-        $tx = array(             //todo: 顺序可以任意调整吧?
+        $tx = array(
             "from"     => $from,
             "to"       => $to,
             "value"    => $value,
