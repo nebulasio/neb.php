@@ -8,6 +8,7 @@
     "grpc/grpc": "^v1.3.0",
     "google/protobuf": "^v3.3.0",
     "simplito/elliptic-php":"1.0.4",
+    "litipk/php-bignumbers": "^0.8.6",
     "ext-curl": "*",
     "ext-gmp": "*",
     "ext-scrypt":"*"
@@ -27,5 +28,11 @@
     "psr-4": {
       "Test\\": "tests/"
     }
-  }
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://packagist.org"
+    }
+  ]
 }
