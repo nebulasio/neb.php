@@ -114,12 +114,12 @@ class Admin
      * <p>It's parameters is the same with api/calland api/estimateGas.
      * @param string $from
      * @param string $to
-     * @param string $value
+     * @param string $value note that it's unit is wei.
      * @param int $nonce
      * @param string $gasPrice
      * @param string $gasLimit
-     * @param string|null $type
-     * @param array|null $contract
+     * @param string|null $type -transaction type, should be "binary","deploy", or "call", or null
+     * @param array|null $contract -contract data for deploy/call type. Please refer to {@link https://github.com/nebulasio/wiki/blob/master/rpc_admin.md/#sendtransaction}
      * @param string|null $binary
      * @return mixed
      */

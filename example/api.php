@@ -67,6 +67,7 @@ $resp = $neb->api->call("n1H2Yb5Q6ZfKvs61htVSV4b1U2gr2GA9vo6",
     $nonce + 1,
     "200000",
     "200000",
+    "call", //or use null instead
     array("function" => 'get', 'args' => '["nebulas"]'));
 
 echo $resp, PHP_EOL;

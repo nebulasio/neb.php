@@ -78,8 +78,8 @@ class Api
      * @param int $nonce
      * @param string $gasprice
      * @param string $gasLimit
-     * @param string|null $type
-     * @param array|null $contract
+     * @param string|null $type -transaction type, should be "binary","deploy", or "call", or null
+     * @param array|null $contract -contract data for deploy/call type. Please refer to {@link https://github.com/nebulasio/wiki/blob/master/rpc_admin.md/#sendtransaction}
      * @param string|null $binary
      * @return mixed
      */
