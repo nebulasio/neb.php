@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: yupna
+ * User: yupnano
  * Date: 2018/5/24
  * Time: 23:48
  */
@@ -18,6 +18,16 @@ use Nebulas\Core\TransactionBinaryPayload;
 class TransactionTest extends TestCase
 {
     private $tx = "";
+
+    public function testConstructor(){
+        //$this->expectExceptionMessageRegExp('/^gmp_init*/');
+        $this->expectExceptionMessage("gmp_init(): Unable to convert variable to GMP - string is not an integer");
+
+        $from = new Account();
+        $to = "n1H2Yb5Q6ZfKvs61htVSV4b1U2gr2GA9vo6";
+        $tx = new Transaction("1001", $from, $to, "0.1", 0 );
+        echo $tx->toString();
+    }
 
     public function prepare(){
 

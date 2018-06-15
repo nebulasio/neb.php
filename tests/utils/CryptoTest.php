@@ -1,14 +1,14 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: yupna
+ * User: yupnano
  * Date: 2018/5/30
  * Time: 12:24
  */
 
 namespace Test\utils;
 
-use Neb\Utils\Crypto;
+use Nebulas\Utils\Crypto;
 use PHPUnit\Framework\TestCase;
 
 class CryptoTest extends TestCase
