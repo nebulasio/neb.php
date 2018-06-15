@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: yupna
+ * User: yupnano
  * Date: 2018/5/24
  * Time: 14:48
  */
@@ -85,6 +85,32 @@ $resp = $api->estimateGas("n1JmhE82GNjdZPNZr6dgUuSfzy2WRwmD9zy",
     "200000");
 echo $resp, PHP_EOL;
 
+/**
+ * example of api subscribe
+ */
+echo "Subscribe event.....",PHP_EOL;
+$topics = ["chain.linkBlock", "chain.pendingTransaction","chain.newTailBlock"];
+$neb->api->subscribe($topics,"eventCallback");
 
+/**
+ * Explanation of eventCallback function:
+ * It is the function that handle the subscribed data,
+ * Actually it is the "CURLOPT_WRITEFUNCTION" option for curl, please refer @link http://php.net/manual/en/function.curl-setopt.php
+ *
+ */
+function eventCallback($curlHandle, $data){
+    echo "received data: $data",PHP_EOL; //handle the subscribed event data
+    return strlen($data);   //return the received data length, or the http connection will close.
+}
+
+
+/**
+ * Example of the returned subscribed event data
+ *
+ * {"result":{"topic":"chain.newTailBlock","data":"{\"height\": 183, \"hash\": \"da986d807f1bf57e3ef5be45428d0405b9bd4673f1ae84f9f970cb31ac7947e2\", \"parent_hash\": \"7dd473f65f2edd45944c276c8b5f75857dc6c60adc410c25f8c562db5e3ba76e\", \"acc_root\": \"6ef637266686ee0a3a25e67c70891857c79a147781642b185ea349902b4e5b64\", \"timestamp\": 1529045610, \"tx\": 1, \"miner\": \"n1GmkKH6nBMw4rrjt16RrJ9WcgvKUtAZP1s\", \"random\": \"/vrf_seed/e50f8186130f355d53856f1bd575bc98daa05690cf7454e351d3d64786f6d2a5/vrf_proof/a0933eb57e0a957eb9355067a209e82f00a7c82f67b407a72fc809e72f43b4bd674126ade24025da8d04dc9914bf198d42cc4dbfcd8486cb2a8f67593d9e690b0436f8169f43679e2251400a050cd044e47ff0f6af7c972b525524ee5642c83efddcc80ebaca7a3d5f5322a818bbd8a2897eac0e56484b6f41a2cf6ae4fef26aa8\"}"}}
+ *
+ * {"result":{"topic":"chain.pendingTransaction","data":"{\"chainID\":100,\"data\":\"\",\"from\":\"n1NrMKTYESZRCwPFDLFKiKREzZKaN1nhQvz\",\"gaslimit\":\"2000000\",\"gasprice\":\"2000000\",\"hash\":\"dbde8d409647387c99630bba201b31e000dd95344b1d3afacf7d21286e3042f8\",\"nonce\":29,\"timestamp\":1529045611,\"to\":\"n1NrMKTYESZRCwPFDLFKiKREzZKaN1nhQvz\",\"type\":\"binary\",\"value\":\"0\"}"}}
+ *
+ */
 
 

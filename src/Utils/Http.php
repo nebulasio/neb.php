@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: yupna
+ * User: yupnano
  * Date: 2018/5/31
  * Time: 22:01
  */
@@ -31,4 +31,24 @@ class Http
 
     }
 
+    //keep-alive connection
+    static function request_alive(string $method, string $url, string $payload, callable $downloadProcess){
+
+        $curl=curl_init();
+        $options = array(
+            CURLOPT_URL => $url,
+            CURLOPT_HTTPHEADER => array("Content-type: application/json"),
+            CURLOPT_POSTFIELDS => $payload,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CUSTOMREQUEST =>  strtoupper($method),
+
+            CURLOPT_WRITEFUNCTION => $downloadProcess
+        );
+
+        curl_setopt_array($curl, $options);
+        $result = curl_exec($curl);
+        curl_close($curl);
+        return $result;
+
+    }
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: yupna
+ * User: yupnano
  * Date: 2018/5/23
  * Time: 16:07
  */
@@ -164,7 +164,7 @@ class Admin
     public function signTransactionWithPassphrase(string $from, string $to,
                                                   string $value, string $nonce,
                                                   string $gasPrice, string $gasLimit,
-                                                  string $type, string $contract, string $binary,
+                                                  string $type = null, array $contract = null, string $binary = null,
                                                   string $passphrase)
     {
         $tx = array(
@@ -186,7 +186,7 @@ class Admin
     }
 
     /**
-     * Sign transaction with passphrase.
+     * Send transaction with passphrase.
      * The transaction's sender addrees must be unlock before send.
      * @see {@link https://github.com/nebulasio/wiki/blob/master/rpc_admin.md#signtransactionwithpassphrase}
      *
@@ -205,7 +205,7 @@ class Admin
     public function sendTransactionWithPassphrase(string $from, string $to,
                                                   string $value, string $nonce,
                                                   string $gasPrice, string $gasLimit,
-                                                  string $type, string $contract, string $binary,
+                                                  string $type = null, array $contract = null, string $binary = null,
                                                   string $passphrase)
     {
         $tx = array(

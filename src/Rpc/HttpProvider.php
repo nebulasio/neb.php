@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: yupna
+ * User: yupnano
  * Date: 2018/5/22
  * Time: 17:25
  */
@@ -36,12 +36,16 @@ class HttpProvider
         return $this->host . '/' . $apiVersion . $api;
     }
 
-    function request(string $api, string $payload, string $apiVersion, /*object*/ $options){ //todo: $method & $apiVersion 并作options(json)
+    function request(string $api, string $payload, string $apiVersion, /*object*/ $options){
         $url = $this->createUrl($apiVersion, $api);
         //echo "url: ", $url, PHP_EOL;
 
         if(empty($options->method))
             throw new \Exception("HTTP method has not specified.");
+
+        if(is_callable($options->callback)){
+            return Http::request_alive($options->method,  $url,  $payload, $options->callback);
+        }
 
         return Http::request($options->method,  $url,  $payload, $this->timeout);
     }

@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: yupna
+ * User: yupnano
  * Date: 2018/5/23
  * Time: 16:06
  */
@@ -178,12 +178,28 @@ class Api
     /**
      * Return the subscribed events of transaction & block.
      * @see {@link https://github.com/nebulasio/wiki/blob/master/rpc.md#subscribe}
+     * Here is an example of the returned event data:
+     * {"result":{"topic":"chain.pendingTransaction","data":"{\"chainID\":100,\"data\":\"\",\"from\":\"n1NrMKTYESZRCwPFDLFKiKREzZKaN1nhQvz\",\"gaslimit\":\"2000000\",\"gasprice\":\"2000000\",\"hash\":\"dbde8d409647387c99630bba201b31e000dd95344b1d3afacf7d21286e3042f8\",\"nonce\":29,\"timestamp\":1529045611,\"to\":\"n1NrMKTYESZRCwPFDLFKiKREzZKaN1nhQvz\",\"type\":\"binary\",\"value\":\"0\"}"}}
      *
-     * @param string $topics
-     * @param string $onDownloadProgress
+     * @param array $topics
+     * @param callable $onDownloadProgress this is the function that handle the subscribed data,
+     * when a new subscribed event is received, it will be called.
+     * Actually it is the "CURLOPT_WRITEFUNCTION" option for curl, please refer<a href="http://php.net/manual/en/function.curl-setopt.php">curl_setopt</a>
+     * Here is an example onDownloadProgress function
+     * <code>
+     * function writeCallback($curlHandle, $data){
+     *   echo "received data: $data",PHP_EOL;  //handle the subscribed event data
+     *   return strlen($data);  //return the received data length, or the http connection will close.
+     * }
+     * </code>
+     * @example ../../example/api.php
+     * @return mixed
      */
-    public function subscribe(string $topics, string $onDownloadProgress){
-
+    public function subscribe(array $topics, callable $onDownloadProgress){
+        $param = array(
+            "topics" => $topics,
+        );
+        return $this->sendRequest("post", "/subscribe", $param, $onDownloadProgress);
     }
 
     /**
@@ -244,7 +260,7 @@ class Api
         return $this->sendRequest("post", "/dynasty", $param);
     }
 
-    function sendRequest(string $method, string $api, array $param){
+    function sendRequest(string $method, string $api, array $param, callable $writeFunction = null){
         $api = $this->path . $api;       // e.g. "/user/accountstate"
         //$param = json_encode($param);       // e.g. "{"address":"n1H2Yb5Q6ZfKvs61htVSV4b1U2gr2GA9vo6","height":"0"}"
         $param = Utils::JsonEncode($param);
@@ -252,6 +268,7 @@ class Api
 
         $options = (object) array(
             "method" => $method,
+            "callback" => $writeFunction
         );
         return $this->provider->request($api, $param, $this->apiVersion, $options);
     }
