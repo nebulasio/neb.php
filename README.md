@@ -7,9 +7,9 @@ Users can sign/send transactions and deploy/call smart contract with it.
 neb.php requires the following:
 
 - PHP 7.1 or higher
-- ext/gmp 
+- ext/gmp, (you may need to edit php.ini file to turn it on)
 - ext/curl
-- ext/scrypt, [https://github.com/DomBlack/php-scrypt](https://github.com/DomBlack/php-scrypt)
+- ext/scrypt, refer [https://github.com/DomBlack/php-scrypt](https://github.com/DomBlack/php-scrypt) or [pecl](https://pecl.php.net/package/scrypt)
 
 ## Installation
 
@@ -25,6 +25,7 @@ Or add this in your composer.json:
 }
 ```
 
+And also you can clone this repo or download it as zip file. Then don't forget to run `composer install` under the project root to have the dependencies installed.
 
 ## Usage
 
